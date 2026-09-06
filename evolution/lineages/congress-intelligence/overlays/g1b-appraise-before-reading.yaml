@@ -1,0 +1,21 @@
+operator: retrieval_order
+author: human
+rationale: >-
+  Assign an evidence tier to every item before reading any result, so the
+  discount is applied before the number has had a chance to impress.
+  Hypothesis: appraisal after reading is rationalisation.
+edits:
+  - op: insert_after
+    anchor: "## Stage 2 — Retrieve"
+    text: |+
+
+      Tier everything before reading a single result:
+
+      - `[abstract]` — not peer-reviewed, methods incomplete, results change
+        materially before full publication.
+      - `[peer-reviewed]` — full publication with methods available.
+      - `[registry]` — registered design only, no results.
+
+      Assign the tier from the source, not from how convincing the number is.
+      Appraising after reading the result is not appraisal — the number has
+      already done its work by then.

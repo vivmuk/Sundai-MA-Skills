@@ -1,0 +1,22 @@
+{
+  "_banner": "SYNTHETIC. The congress material is supplied as source documents; the registry entries below are the fictional trials referenced in them, so that a candidate citing an NCT id has something to have retrieved.",
+  "publications": [],
+  "trials": [
+    {
+      "nct_id": "NCT09900031",
+      "synthetic": true,
+      "phase": "Phase 2",
+      "title": "Outpatient step-up dosing feasibility (competitor B programme)",
+      "status": "Active, not recruiting",
+      "sponsor": "Competitor B (fictional)"
+    },
+    {
+      "nct_id": "NCT09900032",
+      "synthetic": true,
+      "phase": "Observational",
+      "title": "Sequencing after BCMA-directed therapy: multicentre retrospective",
+      "status": "Completed",
+      "sponsor": "Academic consortium (fictional)"
+    }
+  ]
+}

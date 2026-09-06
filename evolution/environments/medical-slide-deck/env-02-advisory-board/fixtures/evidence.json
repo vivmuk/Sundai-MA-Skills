@@ -1,0 +1,14 @@
+{
+  "_banner": "SYNTHETIC. Deck content is built from the supplied product profile and evidence landscape. The registry entry below is the fictional pivotal study, so a deck citing it has something to have retrieved.",
+  "publications": [],
+  "trials": [
+    {
+      "nct_id": "NCT09900041",
+      "synthetic": true,
+      "phase": "Phase 1/2",
+      "title": "NVB-201: single-arm study of NORVANTIB in RRMM",
+      "status": "Active, not recruiting",
+      "sponsor": "Nordvant (fictional)"
+    }
+  ]
+}

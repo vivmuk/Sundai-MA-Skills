@@ -1,0 +1,14 @@
+workflow: medical-slide-deck
+artifact:
+  title: Medical slide deck outline
+  quotes_efficacy: true
+  sections:
+    - OBJECTIVE AND AUDIENCE
+    - DATA SLIDES
+    - FAIR BALANCE
+    - BACKUP SLIDES
+# A deck is shown to an external medical audience, so approval status and
+# unapproved-use handling are owed. AE reporting is not: a deck is built from
+# study data, not from patient records, and there is no enquiry to scan. The
+# design-and-denominator rule does the heavy lifting here and is global.
+required_boundaries: [approval_status, offlabel_routing]

@@ -1,0 +1,15 @@
+workflow: congress-intelligence
+artifact:
+  title: Congress intelligence readout
+  quotes_efficacy: true
+  sections:
+    - WHAT CHANGED
+    - WHY IT MATTERS
+    - WHAT TO WATCH
+    - WHAT WE SHOULD DO
+# An internal readout of publicly presented data owes none of the three
+# statements: there is no HCP being addressed, no enquiry to route, and no
+# patient record to scan. Requiring them would fail correct work and push the
+# engine toward boilerplate. The forbidden-content checks and the
+# design-and-denominator rule still apply — those are genuinely universal.
+required_boundaries: []

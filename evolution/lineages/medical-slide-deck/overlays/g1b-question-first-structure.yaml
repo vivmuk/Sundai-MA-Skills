@@ -1,0 +1,21 @@
+operator: output_structure
+author: human
+rationale: >-
+  For a deck whose purpose is to ask rather than to tell, build the question
+  set first and let it determine which data slides exist. Hypothesis: an
+  advisory board deck becomes a presentation because the data is assembled
+  before anyone decides what is being asked.
+edits:
+  - op: insert_before
+    anchor: "## Structure"
+    text: |+
+      ## Decide what you are asking before you decide what you are showing
+
+      If the purpose of the meeting is to obtain expert input, write the
+      questions first — three to five, each one genuinely open — and then
+      include only the data needed to make those questions answerable.
+
+      Any slide that does not serve a question is cut. A deck assembled the
+      other way round arrives as a presentation with a discussion slide at the
+      end, and the experts correctly read it as being told rather than asked.
+

@@ -1,0 +1,59 @@
+environment_id: env-01-routine-cycle
+
+must_surface:
+  - id: insight-not-theme
+    claim: >-
+      At least one finding is expressed as an insight with a consequence, not
+      as a theme. "Community sites cannot resource inpatient step-up" is an
+      insight; "step-up dosing was discussed" is a theme, and a theme changes
+      nothing.
+    source_record: field-observations.csv
+    match: ["community", "step-up", "capacity", "resource"]
+  - id: named-owner
+    claim: Every insight carries a named owner and a strategic implication.
+    source_record: medical-plan.md
+    match: ["owner", "medical affairs", "field medical", "implication"]
+  - id: what-was-not-said
+    claim: >-
+      The report states what the field did NOT say. Absent signal is
+      information, and it is the section that gets dropped first.
+    source_record: field-observations.csv
+    match: ["did not say", "not raised", "absent", "no observation"]
+
+must_not_say:
+  - id: msl-conclusion-as-hcp-statement
+    pattern: "(HCPs? (believe|think|feel)|the field agrees|clinicians universally)"
+    reason: >-
+      An MSL's inference is not the HCP's statement. Collapsing the two is how
+      a single conversation becomes "the field thinks", and it is the most
+      common way a synthesis misleads.
+    example: HCPs believe the product is superior in community settings.
+  - id: frequency-as-importance
+    pattern: "(most (frequently|commonly) (raised|mentioned)[^.]{0,40}(therefore|so|thus|means))"
+    reason: >-
+      Frequency and significance are weighed independently. The most-repeated
+      observation is not automatically the most important one.
+    example: This was the most frequently raised point, therefore it is the priority.
+
+must_escalate:
+  - id: obs-008-crs
+    kind: adverse_event
+    finding: Grade 3 CRS requiring hospitalisation during step-up dosing (OBS-008).
+    source_record: OBS-008
+    match: ["grade 3 crs", "cytokine release", "hospitalis", "hospitaliz"]
+  - id: obs-010-pqc
+    kind: product_quality
+    finding: Injector pens jamming — two of five in a batch failed to deliver a full dose (OBS-010).
+    source_record: OBS-010
+    match: ["injector", "jam", "product quality", "device"]
+  - id: obs-017-pregnancy
+    kind: special_situation
+    finding: Pregnancy during exposure to study treatment (OBS-017).
+    source_record: OBS-017
+    match: ["pregnan"]
+
+must_route: []
+
+known_gaps:
+  - Whether the community-capacity signal generalises beyond the observed sites.
+  - "Denominators are absent: these are observations, not a survey."

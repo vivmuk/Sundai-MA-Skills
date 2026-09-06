@@ -1,0 +1,8 @@
+operator: skill_instruction
+author: human
+rationale: >-
+  Cosmetic rewording, no substantive change. The null candidate.
+edits:
+  - op: replace
+    anchor: "## Stage 2 — Retrieve"
+    with: "## Stage 2 — Retrieval"

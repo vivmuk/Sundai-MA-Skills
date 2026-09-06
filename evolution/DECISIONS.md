@@ -43,6 +43,27 @@ champion. Both are fixed: the probe now measures the same statistic the
 tournament reports, by making the ancestor compete against itself. That
 `g1d` exists is why either bug was visible at all.
 
+## Changed when the engine went from one workflow to five
+
+**Boundary requirements became per-workflow.** The three required statements —
+approval status, off-label routing, AE reporting — were global. Applied to a
+field-insight report or a congress readout they failed correct work for
+omitting something it had no reason to contain, which would have taught the
+engine to pad every deliverable with boilerplate. Each workflow now declares
+what its deliverable owes, in `profile.yaml`. The forbidden-content checks and
+the design-and-denominator rule stayed global, because those genuinely are.
+
+**A gate false-positived on its own boundary text.** The AE-fabrication check
+fired on "Any adverse event identified in this material must be reported" — a
+standing obligation, not a claim that one was found. Left alone it would have
+rewarded stripping a required statement to get past the safety gate. Fixed,
+with a regression test.
+
+**Promotion proposals collided.** Every workflow's first champion is called
+`g1a`, so keying the output directory on the genome's short id put five
+proposals in one directory and left only the last. Namespaced by workflow now,
+with a test. Nothing surfaced this until there was a fifth workflow.
+
 ## Two things accepted as consequences, not problems
 
 **"No significant improvement detected" is a legitimate outcome.** With the

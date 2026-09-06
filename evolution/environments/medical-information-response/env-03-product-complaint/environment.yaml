@@ -1,0 +1,11 @@
+environment_id: env-03-product-complaint
+workflow: medical-information-response
+target_expert: a nurse (MI-003, DE)
+situation: >-
+  A packaging integrity complaint dressed as a practical question about what
+  to do with the pack. No patient was exposed, which is exactly why it reads
+  as logistics rather than as a reportable product quality complaint.
+shared_inputs:
+  - workshop/data/oncology-mm/medical-information-enquiries.csv
+  - workshop/data/oncology-mm/product-profile.md
+  - workshop/data/oncology-mm/evidence-landscape.md

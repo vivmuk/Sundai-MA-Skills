@@ -1,0 +1,22 @@
+operator: skill_instruction
+author: human
+rationale: >-
+  Score frequency and significance on separate explicit scales and show both,
+  rather than weighing them in prose. Hypothesis: the conflation of "often
+  said" with "important" survives prose instructions but not two columns.
+edits:
+  - op: insert_after
+    anchor: "### Weigh frequency and significance independently"
+    text: |+
+
+      Give every insight two scores and print both:
+
+      - **Frequency** — how many distinct records, and from how many distinct
+        MSLs and accounts. One MSL reporting something five times is one
+        source, not five.
+      - **Significance** — what changes if this is true. Score it as though
+        the observation appeared exactly once.
+
+      Rank by significance and show frequency beside it. Never combine them
+      into a single number: the combined score is where a loud, trivial
+      observation overtakes a quiet, consequential one.

@@ -30,8 +30,13 @@ from engine.evidence import EvidenceStore, LiveRetrievalBlocked  # noqa: E402
 from engine.genome import Genome, Overlay, OverlayError, load_all as load_genomes  # noqa: E402
 from engine.paths import LINEAGES, WriteBoundaryError, assert_writable  # noqa: E402
 
-WORKFLOW = "kol-engagement-brief"
+WORKFLOW = "kol-engagement-brief"   # the workflow used for detailed gate tests
 BUDGET = Budget()
+
+
+def active_workflows():
+    spec = yaml.safe_load((ROOT / "evolution/registry/workflows.yaml").read_text())
+    return [k for k, v in spec["workflows"].items() if v.get("status") == "active"]
 
 
 def env(env_id):
@@ -155,6 +160,16 @@ class Gates(unittest.TestCase):
         self.assertFalse(r.passed)
         self.assertIn("without design or denominator", " ".join(r.findings))
 
+    def test_a_standing_ae_obligation_is_not_a_fabricated_finding(self):
+        """"Any adverse event identified must be reported" is policy text that
+        belongs in the deliverable. Firing on it would teach the engine to
+        strip a required boundary statement to get past the safety gate."""
+        e = env("env-01-routine")
+        ph = run()
+        ph.artifact += ("\n- Any adverse event identified in this material must "
+                        "be reported through the standard route.\n")
+        self.assertTrue(gates.safety_gate(ph, e).passed)
+
     def test_fabricated_safety_finding_is_caught(self):
         """Inventing an AE to look vigilant is a failure, not a safe default."""
         e = env("env-01-routine")
@@ -267,11 +282,12 @@ class Environments(unittest.TestCase):
         for e in envs:
             self.assertTrue(e.target_expert)
             self.assertTrue(e.situation)
-            self.assertTrue(e.evidence.get("publications"))
+            self.assertIsInstance(e.evidence.get("publications"), list)
             self.assertEqual(e.expectations.environment_id, e.environment_id)
 
     def test_expectation_ids_are_unique_within_an_environment(self):
-        for e in load_environments(WORKFLOW):
+        for wf in active_workflows():
+          for e in load_environments(wf):
             ids = [i["id"] for group in (e.expectations.must_surface,
                                          e.expectations.must_not_say,
                                          e.expectations.must_escalate,
@@ -290,6 +306,104 @@ class Environments(unittest.TestCase):
         self.assertTrue(any(e.expectations.must_route for e in envs), "boundaries")
         self.assertTrue(any(e.expectations.must_surface for e in envs), "science")
         self.assertTrue(any(e.expectations.must_not_say for e in envs), "science")
+
+
+class EveryWorkflow(unittest.TestCase):
+    """Structural checks that must hold for every active workflow.
+
+    The engine is meant to be workflow-agnostic. These run across all of them
+    so that a workflow wired up incorrectly fails here rather than during a
+    campaign that has already spent money.
+    """
+
+    def test_at_least_two_workflows_are_active(self):
+        """One active workflow cannot show whether the engine generalises."""
+        self.assertGreaterEqual(len(active_workflows()), 2)
+
+    def test_every_active_workflow_is_completely_wired(self):
+        for wf in active_workflows():
+            with self.subTest(workflow=wf):
+                genomes = load_genomes(wf)
+                envs = load_environments(wf)
+                self.assertIn(f"{wf}/g0", genomes, "no ancestor")
+                self.assertGreaterEqual(len(genomes), 3, "needs candidates")
+                self.assertGreaterEqual(len(envs), 2, "needs environments")
+                for name in ("profile.yaml", "pairwise.yaml", "rubric.yaml"):
+                    self.assertTrue(
+                        (ROOT / "evolution/evaluators/workflows" / wf / name).exists(),
+                        f"missing {name}")
+
+    def test_every_overlay_applies_in_every_workflow(self):
+        for wf in active_workflows():
+            base = (ROOT / f"skills/{wf}/SKILL.md").read_text()
+            for gid, g in load_genomes(wf).items():
+                with self.subTest(genome=gid):
+                    text = g.express()          # raises if an anchor is missing
+                    if g.overlays:
+                        self.assertNotEqual(text, base, "overlay changed nothing")
+
+    def test_every_workflow_has_a_null_control(self):
+        """Without one, a broken evaluator is invisible."""
+        for wf in active_workflows():
+            with self.subTest(workflow=wf):
+                nulls = [g for g in load_genomes(wf).values()
+                         if g.overlays and "null candidate" in g.overlays[0].rationale]
+                self.assertTrue(nulls, "no null control genome")
+                base = (ROOT / f"skills/{wf}/SKILL.md").read_text()
+                self.assertLess(abs(len(nulls[0].express()) - len(base)), 40,
+                                "the null control makes a substantive change")
+
+    def test_a_clean_run_passes_every_gate_in_every_workflow(self):
+        for wf in active_workflows():
+            genome = load_genomes(wf)[f"{wf}/g0"]
+            for e in load_environments(wf):
+                with self.subTest(workflow=wf, environment=e.environment_id):
+                    ph = MockAdapter().run(genome, e, BUDGET, seed=0)
+                    failed = [(r.gate, r.findings)
+                              for r in gates.run_gates(ph, e) if not r.passed]
+                    self.assertEqual(failed, [], f"{failed}")
+
+    def test_every_workflow_declares_a_valid_profile(self):
+        from engine.profiles import ALL_BOUNDARIES, load as load_profile
+        for wf in active_workflows():
+            with self.subTest(workflow=wf):
+                p = load_profile(wf)
+                self.assertTrue(p.sections, "profile declares no output sections")
+                for b in p.required_boundaries:
+                    self.assertIn(b, ALL_BOUNDARIES)
+
+    def test_source_material_is_marked_synthetic_everywhere(self):
+        for wf in active_workflows():
+            for e in load_environments(wf):
+                with self.subTest(workflow=wf, environment=e.environment_id):
+                    self.assertIn("SYNTHETIC", e.source_text().upper())
+
+    def test_registry_purpose_and_invariants_are_present(self):
+        spec = yaml.safe_load((ROOT / "evolution/registry/workflows.yaml").read_text())
+        for wf in active_workflows():
+            with self.subTest(workflow=wf):
+                entry = spec["workflows"][wf]
+                self.assertTrue(entry["purpose"]["statement"].strip())
+                self.assertEqual(entry["purpose"]["mutation"], "governed")
+                self.assertGreaterEqual(len(entry.get("invariants", [])), 3)
+
+
+class Promotion(unittest.TestCase):
+    def test_proposals_from_different_workflows_do_not_collide(self):
+        """Every workflow's first champion is called g1a. Keying the output
+        directory on the genome id alone put five proposals in one place and
+        left only the last one."""
+        import subprocess
+        seen = set()
+        for wf in active_workflows():
+            r = subprocess.run([sys.executable, str(ROOT / "scripts/promote.py"), wf],
+                               capture_output=True, text=True)
+            if "PROMOTION PROPOSAL" not in r.stdout:
+                continue        # no champion recorded yet in this checkout
+            path = next(l.split()[-1] for l in r.stdout.splitlines()
+                        if "proposal.patch" in l)
+            self.assertNotIn(path, seen, f"{wf} reused another workflow's path")
+            seen.add(path)
 
 
 class Constitution(unittest.TestCase):

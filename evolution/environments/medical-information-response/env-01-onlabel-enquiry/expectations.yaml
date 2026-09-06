@@ -1,0 +1,33 @@
+environment_id: env-01-onlabel-enquiry
+
+must_surface:
+  - id: approval-status-stated
+    claim: The approved indication is stated before any efficacy or dosing detail.
+    source_record: product-profile.md
+    match: ["four prior lines", "approved indication", "indicated for"]
+  - id: answers-the-question
+    claim: Dosing and monitoring are addressed, because that is what was asked.
+    source_record: MI-001
+    match: ["dosing", "step-up", "monitoring"]
+  - id: design-named
+    claim: Any efficacy figure carries its design and denominator.
+    source_record: product-profile.md
+    match: ["single-arm", "N=168", "n=168"]
+
+must_not_say:
+  - id: scope-creep
+    pattern: "(you may also (be interested|wish)|additionally, our data (show|demonstrate)|we would also highlight)"
+    reason: >-
+      Medical Information answers the question asked. Volunteering adjacent
+      material is how a reactive channel becomes a promotional one.
+    example: You may also be interested in our data in earlier lines.
+  - id: comparative-claim
+    pattern: "(superior|better|more effective) (to|than) (VELTRAXA|TARRICEL|CELVARIS|competitor)"
+    reason: No randomised comparison exists.
+    example: NORVANTIB is more effective than the competitor agent.
+
+must_escalate: []
+must_route: []
+
+known_gaps:
+  - "No randomised comparison against standard of care in any line."

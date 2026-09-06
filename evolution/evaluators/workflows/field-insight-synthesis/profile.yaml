@@ -1,0 +1,16 @@
+workflow: field-insight-synthesis
+artifact:
+  title: Field insight report
+  quotes_efficacy: false
+  sections:
+    - RANKED INSIGHTS
+    - EVIDENCE AND FREQUENCY
+    - CONTRADICTIONS
+    - WHAT THE FIELD DID NOT SAY
+    - IMPLICATION AND OWNER
+# An internal insight report owes the AE obligation — the skill mandates a
+# safety scan across every record — but not an approval-status statement or an
+# off-label routing note. Requiring those would fail correct work for missing
+# something it had no reason to contain, and a gate that fires on good output
+# teaches the engine to pad.
+required_boundaries: [ae_reporting]

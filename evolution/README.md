@@ -10,11 +10,31 @@ The principle it is built around:
 > **Keep Medical Affairs purpose and safety boundaries stable. Allow the
 > strategies used to achieve that purpose to evolve.**
 
-**Status: running, against the mock adapter.** The engine, the gates, the
-tournament, the lineage and the promotion path all work end to end and are
-covered by an offline test suite. What has *not* run is a real model: that
-needs a Venice key and network egress. Read `DECISIONS.md` for the reasoning
-behind each choice, including the two that changed during the build.
+**Status: running, across five workflows, against the mock adapter.** The
+engine, the gates, the tournament, the lineage and the promotion path work end
+to end for every active workflow and are covered by an offline test suite.
+What has *not* run is a real model: that needs a Venice key and network
+egress. Read `DECISIONS.md` for the reasoning behind each choice, including
+the ones that changed during the build.
+
+## Active workflows
+
+| Workflow | Environments | Boundaries its deliverable owes |
+|---|---|---|
+| `kol-engagement-brief` | 4 | approval status, off-label routing, AE reporting |
+| `field-insight-synthesis` | 2 | AE reporting |
+| `medical-information-response` | 3 | approval status, off-label routing, AE reporting |
+| `congress-intelligence` | 2 | none |
+| `medical-slide-deck` | 2 | approval status, off-label routing |
+
+Each declares its own output shape and its own boundary obligations in
+`evaluators/workflows/<workflow>/profile.yaml`. That is not a convenience:
+requiring an approval-status statement in an internal field-insight report, or
+an AE-reporting reminder in a congress readout, would fail correct work for
+omitting something it had no reason to contain — and a gate that fires on good
+output teaches the engine to pad. The forbidden-content checks and the
+design-and-denominator rule stay global, because those are genuinely
+universal.
 
 ---
 
@@ -166,7 +186,13 @@ python3 scripts/evolve.py run   kol-engagement-brief --adapter mock --yes   # ge
 python3 scripts/evolve.py tree  kol-engagement-brief
 python3 scripts/promote.py      kol-engagement-brief                        # champion -> patch + PR body
 python3 scripts/evaluate.py     <experiment-id>                             # re-run gates on stored artifacts
-python3 scripts/selftest_evolution.py                                       # 36 checks
+python3 scripts/selftest_evolution.py                                       # 46 checks
+
+# Any active workflow works the same way:
+python3 scripts/evolve.py run   field-insight-synthesis      --adapter mock --yes
+python3 scripts/evolve.py run   medical-information-response --adapter mock --yes
+python3 scripts/evolve.py run   congress-intelligence        --adapter mock --yes
+python3 scripts/evolve.py run   medical-slide-deck           --adapter mock --yes
 ```
 
 `run` refuses outright until the band has been measured, and every command
@@ -190,7 +216,8 @@ project exists to avoid.
 ## Build order
 
 1. ~~Schemas, lineage store, gates, cost estimator, mock adapter.~~ Done.
-2. ~~Four environments with labelled expectations and authored corpora.~~ Done.
+2. ~~Environments with labelled expectations and authored corpora.~~ Done —
+   13 across five workflows.
 3. ~~Promotion path: patch, evidence pack, PR body.~~ Done.
 4. **Venice adapter against a real model.** Written and unit-tested; never
    executed. Needs `VENICE_API_KEY` and egress to `api.venice.ai`.

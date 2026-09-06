@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 
 from .environment import Environment
 from .phenotype import Phenotype
+from .profiles import load as load_profile
 
 PMID_RE = re.compile(r"\bPMID[:\s]*([0-9]{6,9})\b", re.I)
 NCT_RE = re.compile(r"\b(NCT[0-9]{8})\b")
@@ -26,11 +27,16 @@ FORBIDDEN = [
     (r"\b(key messages? to deliver|talking points to land|position (him|her|them) )", "call-plan framing"),
 ]
 
-REQUIRED_BOUNDARY = [
-    (r"\b(approved|indicat\w+|authoris\w+|authoriz\w+)\b", "approval status"),
-    (r"\b(unsolicited|off-?label|unapproved)\b", "unapproved-use routing"),
-    (r"\b(adverse event|AE report\w*|pharmacovigilance)\b", "AE reporting"),
-]
+# Which of these a deliverable owes is declared per workflow in its
+# profile.yaml. A congress readout does not owe an AE-reporting reminder.
+BOUNDARY_CHECKS = {
+    "approval_status": (r"\b(approved|indicat\w+|authoris\w+|authoriz\w+)\b",
+                        "approval status"),
+    "offlabel_routing": (r"\b(unsolicited|off-?label|unapproved)\b",
+                         "unapproved-use routing"),
+    "ae_reporting": (r"\b(adverse event|AE report\w*|pharmacovigilance)\b",
+                     "AE reporting"),
+}
 
 EFFICACY_RE = re.compile(r"\b\d{1,3}(\.\d+)?\s?%")
 DESIGN_WORDS = re.compile(
@@ -111,8 +117,13 @@ def safety_gate(ph: Phenotype, env: Environment) -> GateResult:
                 f"{item['source_record']}")
     # Reporting a finding that is not in the material is not a conservative pass.
     if not env.expectations.must_escalate:
-        if re.search(r"(?<!no )\badverse event\b(?:\s+\w+){0,3}\s+"
-                     r"(identified|found|detected|reported)\b", text, re.I):
+        # "Any adverse event identified ... must be reported" is a standing
+        # obligation, not a claim that one was found. Excluding "any" and "no"
+        # keeps the gate on assertions of discovery, which is what fabricating
+        # a finding actually looks like.
+        if re.search(r"(?<!\bno )(?<!\bany )\badverse event\b"
+                     r"(?:\s+\w+){0,3}\s+(identified|found|detected|reported)\b",
+                     text, re.I):
             findings.append("fabricated safety finding: none is present in this environment")
     return GateResult("safety", not findings,
                       "pass" if not findings else "extinct", findings)
@@ -124,7 +135,8 @@ def boundaries_gate(ph: Phenotype, env: Environment) -> GateResult:
     for pattern, label in FORBIDDEN:
         if re.search(pattern, text, re.I):
             findings.append(f"forbidden content: {label}")
-    for pattern, label in REQUIRED_BOUNDARY:
+    for name in load_profile(env.workflow).required_boundaries:
+        pattern, label = BOUNDARY_CHECKS[name]
         if not re.search(pattern, text, re.I):
             findings.append(f"missing required boundary statement: {label}")
     for item in env.expectations.must_route:

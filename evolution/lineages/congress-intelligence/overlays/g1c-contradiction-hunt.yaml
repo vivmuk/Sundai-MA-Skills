@@ -1,0 +1,21 @@
+operator: qa_loop
+author: human
+rationale: >-
+  Require an explicit search for datasets that disagree, and forbid
+  reconciling them. Hypothesis: readouts converge on a tidy narrative because
+  contradiction feels like an unfinished analysis rather than a finding.
+edits:
+  - op: insert_after
+    anchor: "### Hunt for contradiction"
+    text: |+
+
+      Name every pair of results at this congress that point in different
+      directions, and for each one state:
+
+      - what each dataset would imply if it were the only one available
+      - what differs between them that could explain the divergence
+      - what evidence would settle it
+
+      Do not resolve the pair. A contradiction reported as a contradiction is
+      a finding leadership can act on; the same pair averaged into a single
+      conclusion is a fabrication with a confident tone.

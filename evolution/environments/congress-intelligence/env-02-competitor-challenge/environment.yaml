@@ -1,0 +1,13 @@
+environment_id: env-02-competitor-challenge
+workflow: congress-intelligence
+target_expert: medical leadership
+situation: >-
+  The same congress, read for a specific question: a competitor has shown
+  outpatient step-up dosing with no grade 3 CRS (abstract 1003) while our own
+  field records an admission for it. The readout must say what that changes
+  without becoming a defence of our product.
+shared_inputs:
+  - workshop/data/oncology-mm/congress-abstracts.md
+  - workshop/data/oncology-mm/competitor-announcements.md
+  - workshop/data/oncology-mm/evidence-landscape.md
+  - workshop/data/oncology-mm/product-profile.md

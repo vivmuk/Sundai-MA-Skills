@@ -1,0 +1,30 @@
+id: medical-slide-deck-pairwise
+kind: judged
+selection: true
+method:
+  comparison: candidate_vs_reigning_champion
+  blinding: {strip_identity: true, randomize_order: true, strip_metadata: true}
+  repetitions: 3
+  tie_allowed: true
+judge:
+  model: gemini-3-8-flash
+  inputs: [the two deck outlines, the source data, the workflow purpose, the anchors below]
+question: >-
+  A medical audience will sit through one of these. Which one presents the
+  evidence at the standard a medical deck is held to, and survives the
+  questions it will get?
+anchors:
+  better:
+    - a reference on every data slide, and the design named beside every result
+    - fair balance at comparable prominence, not relegated to a footnote
+    - approval status stated
+    - backup slides built from the questions this audience will actually ask
+    - the deck follows the analysis rather than substituting for it
+  worse:
+    - a commercial deck with the claims removed
+    - results without their design or denominator
+    - limitations in smaller type at the end
+    - backup slides that are leftover content rather than anticipated questions
+decision:
+  win_rate_source: policies/default-evolution-policy.yaml::selection.neutral_band
+  on_unmeasured_band: refuse_to_declare_champion

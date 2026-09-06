@@ -1,0 +1,20 @@
+operator: qa_loop
+author: human
+rationale: >-
+  Derive backup slides from a written list of anticipated questions rather
+  than from leftover content. Hypothesis: backup sets are filled with material
+  that was cut, which is the opposite of what they are for.
+edits:
+  - op: insert_after
+    anchor: "### Backup slides"
+    text: |+
+
+      Build the backup set from a written list of the questions this audience
+      will actually ask, one slide per question, before moving any cut
+      material into it.
+
+      Cut content and anticipated questions are different things that end up
+      in the same place. A backup set assembled from cuts answers the
+      questions the author found interesting; one assembled from anticipated
+      questions answers the questions the room will ask, which is the only
+      reason the section exists.

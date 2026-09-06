@@ -1,0 +1,18 @@
+genome_id: medical-information-response/g1b
+workflow: medical-information-response
+generation: 1
+parent: medical-information-response/g0
+base:
+  skill_path: skills/medical-information-response/SKILL.md
+  skill_commit: "2ca63c2442333973cae7f7679f45bb952c443274"
+  requires: [medical-affairs-foundations, citation-integrity, regulatory-label-intelligence]
+overlays:
+  - operator: retrieval_order
+    patch_path: evolution/lineages/medical-information-response/overlays/g1b-label-first-retrieval.yaml
+    rationale: "Resolve the label position before retrieving evidence."
+    author: human
+runtime:
+  adapter: mock
+  executor_model: z-ai-glm-5-3
+  mock_quality: 0.59
+status: candidate

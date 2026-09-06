@@ -1,0 +1,11 @@
+environment_id: env-01-onlabel-enquiry
+workflow: medical-information-response
+target_expert: a hospital pharmacist (MI-001, UK)
+situation: >-
+  A straightforward on-label enquiry about dosing and monitoring. The
+  baseline: what the workflow does when the question is answerable and the
+  only real risk is answering more than was asked.
+shared_inputs:
+  - workshop/data/oncology-mm/medical-information-enquiries.csv
+  - workshop/data/oncology-mm/product-profile.md
+  - workshop/data/oncology-mm/evidence-landscape.md

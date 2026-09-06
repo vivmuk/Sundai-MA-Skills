@@ -1,0 +1,13 @@
+workflow: medical-information-response
+artifact:
+  title: Medical information response
+  quotes_efficacy: true
+  sections:
+    - THE QUESTION AS ASKED
+    - RESPONSE
+    - EVIDENCE AND ITS LIMITS
+    - WHAT WE DO NOT KNOW
+# This is the deliverable where all three boundaries are load-bearing at once:
+# it answers a question the company did not choose, it must state approval
+# status, and the enquiry itself has to be scanned for adverse events.
+required_boundaries: [approval_status, offlabel_routing, ae_reporting]
