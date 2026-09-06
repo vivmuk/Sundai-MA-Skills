@@ -2,9 +2,16 @@ name: import-upstream-once
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/import-upstream-once.yml"
 
 permissions:
   contents: write
+
+concurrency:
+  group: import-upstream-once
+  cancel-in-progress: false
 
 jobs:
   import:
@@ -27,29 +34,67 @@ jobs:
           SRC=$(find /tmp/ma-skills-src -mindepth 1 -maxdepth 1 -type d | head -1)
           echo "SRC=$SRC"
 
-          # Preserve ORIGIN.md if present; otherwise create it
           if [ -f ORIGIN.md ]; then
             cp ORIGIN.md /tmp/ORIGIN.md.keep
           fi
 
-          # Replace working tree with upstream contents at repo root (no wrapper dir)
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           cp -a "$SRC"/. .
 
           if [ -f /tmp/ORIGIN.md.keep ]; then
             cp /tmp/ORIGIN.md.keep ORIGIN.md
           else
-            cat > ORIGIN.md << EOF
-          # Origin
-
-          This repository started as a copy of https://github.com/Open-Medical-Affairs/Medical-Affairs-Skills
-          (default branch \`claude/medical-affairs-agent-workshop-ttpxhf\` at copy time) for local evolution in \`vivmuk/Sundai-MA-Skills\`.
-          Original Apache-2.0 LICENSE and NOTICE are preserved.
-          EOF
+            printf '%s\n' \
+              '# Origin' \
+              '' \
+              'This repository started as a copy of https://github.com/Open-Medical-Affairs/Medical-Affairs-Skills' \
+              '(default branch `claude/medical-affairs-agent-workshop-ttpxhf` at copy time) for local evolution in `vivmuk/Sundai-MA-Skills`.' \
+              'Original Apache-2.0 LICENSE and NOTICE are preserved.' \
+              > ORIGIN.md
           fi
 
-          # Inventory
+          # Keep this importer workflow so it is not wiped by the upstream tree
+          mkdir -p .github/workflows
+          # workflow file is restored from git history by the commit step if wiped;
+          # re-write a marker file documenting the import.
+          echo "imported_from=Open-Medical-Affairs/Medical-Affairs-Skills@${BRANCH}" > .github/IMPORT-SOURCE.txt
+
           find . -type f ! -path './.git/*' | wc -l
+
+      - name: Restore importer workflow after tree replace
+        run: |
+          set -euo pipefail
+          mkdir -p .github/workflows
+          cat > .github/workflows/import-upstream-once.yml << 'EOF'
+          name: import-upstream-once
+          on:
+            workflow_dispatch:
+          permissions:
+            contents: write
+          jobs:
+            noop:
+              runs-on: ubuntu-latest
+              steps:
+                - run: echo "Import already completed; workflow left as workflow_dispatch-only."
+          EOF
+          # Fix leading indentation from heredoc in YAML - write clean file via python
+          python3 - <<'PY'
+          from pathlib import Path
+          Path('.github/workflows/import-upstream-once.yml').write_text('''name: import-upstream-once
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Import already completed; workflow left as workflow_dispatch-only."
+''')
+          PY
 
       - name: Commit and push full import
         run: |
