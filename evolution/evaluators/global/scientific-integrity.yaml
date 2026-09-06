@@ -1,0 +1,33 @@
+# HARD GATE — mixed. Labelled checks are deterministic; the rest is judged.
+id: scientific-integrity
+kind: hybrid
+blocking: true
+
+description: >-
+  Scientific integrity (§11). Where an environment carries a labelled
+  expectation — a study design, a denominator, a stated limitation — the
+  check is deterministic against that label. Everything else is judged, and
+  a judged finding quarantines rather than extinguishes.
+
+deterministic_checks:
+  outcome_on_failure: extinct
+  items:
+    - id: must_not_say
+      rule: No item from the environment's `must_not_say` list appears.
+    - id: design_named
+      rule: >-
+        Every efficacy number in KNOW COLD carries its study design and
+        denominator, per the skill's Stage 5.
+    - id: must_surface
+      rule: Every item in the environment's `must_surface` list is present.
+
+judged_checks:
+  outcome_on_failure: quarantine
+  items:
+    - materially incorrect evidence
+    - unsupported claim
+    - incorrect study design description
+    - material uncertainty hidden rather than stated
+    - inference presented as established fact
+
+implementation: scripts/evaluate.py::science_gate

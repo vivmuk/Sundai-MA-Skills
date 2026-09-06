@@ -2,3 +2,11 @@
 # Enforcement also requires GitHub branch rules; this file alone is not a lock.
 * @vivmuk
 /.github/ @vivmuk
+
+# Evolution Engine — Level 0. These paths define what the engine may never
+# change about itself. Explicit here so the intent is legible in review, not
+# only implied by the catch-all above.
+/evolution/constitution/     @vivmuk
+/evolution/evaluators/global/ @vivmuk
+/evolution/registry/         @vivmuk
+/evolution/policies/         @vivmuk

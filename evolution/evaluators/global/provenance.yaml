@@ -1,0 +1,29 @@
+# HARD GATE — deterministic.
+id: provenance
+kind: deterministic
+blocking: true
+outcome_on_failure: extinct
+
+description: >-
+  Claims must be traceable to the material the run actually saw. A brief that
+  is correct but untraceable is not promotable, because nobody downstream can
+  check it.
+
+checks:
+  - id: provenance_section_present
+    rule: The artifact carries the PROVENANCE section required by the skill's Stage 5.
+    failure: missing_provenance
+  - id: queries_recorded
+    rule: Searches run and retrieval dates are recorded and match the transcript.
+    failure: unrecorded_retrieval
+  - id: gaps_declared
+    rule: What could not be determined is stated rather than omitted.
+    failure: undeclared_gap
+  - id: draft_marking
+    rule: >-
+      The draft/synthetic marking required by the repository's execution
+      contract is present and unaltered.
+    failure: missing_draft_marking
+
+implementation: scripts/evaluate.py::provenance_gate
+cost_usd: 0.00

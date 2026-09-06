@@ -1,0 +1,46 @@
+# Which workflows the Evolution Engine is permitted to evolve, and the
+# Level 1 purpose it must preserve while doing so.
+#
+# Level 1 purpose is human-governed: a mutation that changes what the
+# workflow is FOR is rejected, not scored. Changing a purpose statement
+# requires a pull request against this file.
+
+version: 1
+
+workflows:
+  kol-engagement-brief:
+    status: active
+    ancestor:
+      skill: skills/kol-engagement-brief/SKILL.md
+      version: "1.0.0"
+    requires:
+      - medical-affairs-foundations
+      - citation-integrity
+    suggests:
+      - evidence-appraisal
+      - pubmed-search
+      - clinical-trials-search
+      - deliverable-quality-review
+    purpose:
+      statement: >-
+        Improve the quality of scientific exchange between an MSL and an
+        external scientific expert. The unit of value is a question the MSL
+        could not otherwise have asked, or an answer they could not
+        otherwise have given.
+      mutation: governed
+    invariants:
+      # Properties every descendant must retain regardless of fitness.
+      # A candidate violating one is rejected before it is scored.
+      - the brief tells the MSL what to ask, not what to say
+      - no influence tier, prescribing data, or commercial segmentation
+      - the expert is treated as a scientific peer, not a target
+      - length remains consumable in roughly ten minutes
+    environments: evolution/environments/kol-engagement-brief/
+    evaluators: evolution/evaluators/workflows/kol-engagement-brief/
+
+  # Wave 1 candidates (§34), not yet activated. Each needs its own
+  # environments and rubric before it can be evolved.
+  field-insight-synthesis:   {status: planned}
+  medical-information-response: {status: planned}
+  congress-intelligence:     {status: planned}
+  medical-slide-deck:        {status: planned}

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experiment-manifest.schema.json",
+  "title": "Experiment manifest",
+  "description": "§20. The question is not whether a candidate produced one good answer. It is whether a genotype reliably produces better behaviour — which requires that the run can be reconstructed exactly.",
+  "type": "object",
+  "required": ["experiment_id", "timestamp", "policy", "environments", "genomes", "cost", "results"],
+  "properties": {
+    "experiment_id": {"type": "string"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "repo_commit": {"type": "string"},
+    "policy": {"type": "object", "required": ["path", "sha256"],
+      "properties": {"path": {"type": "string"}, "sha256": {"type": "string"}}},
+    "environments": {"type": "array", "items": {"type": "object",
+      "required": ["environment_id", "inputs_sha256", "expectations_sha256", "fixtures_sha256", "evidence_mode"],
+      "properties": {
+        "environment_id": {"type": "string"}, "inputs_sha256": {"type": "string"},
+        "expectations_sha256": {"type": "string"}, "fixtures_sha256": {"type": "string"},
+        "evidence_mode": {"enum": ["replay", "live"]},
+        "recorded_at": {"type": "string", "format": "date-time"}}}},
+    "genomes": {"type": "array", "items": {"type": "string"}},
+    "models": {"type": "object", "required": ["executor", "judge"],
+      "properties": {
+        "executor": {"type": "object", "properties": {
+          "id": {"type": "string"}, "adapter": {"type": "string"}, "privacy_tier": {"type": "string"}}},
+        "judge": {"type": "object", "properties": {
+          "id": {"type": "string"}, "privacy_tier": {"type": "string"}}}}},
+    "neutral_band": {"type": ["object", "null"],
+      "properties": {"measured_from": {"type": "string"}, "value": {"type": "number"},
+        "probe_runs": {"type": "integer"}},
+      "description": "Null means no champion may be declared."},
+    "cost": {"type": "object", "required": ["estimate_usd", "actual_usd", "prices_fetched_at"],
+      "properties": {
+        "estimate_usd": {"type": "number"},
+        "actual_usd": {"type": "number"},
+        "prices_fetched_at": {"type": "string", "format": "date-time"},
+        "prices": {"type": "object", "description": "The per-model prices used, as fetched live. Never a hardcoded table."},
+        "confirmed_by_operator": {"type": "boolean"},
+        "budget_aborted": {"type": "boolean"}},
+      "description": "Estimate and actual side by side, so the estimator self-corrects against real runs."},
+    "results": {"type": "array", "items": {"type": "object",
+      "properties": {
+        "genome_id": {"type": "string"},
+        "gates": {"type": "object"},
+        "pairwise": {"type": "object", "properties": {
+          "opponent": {"type": "string"}, "wins": {"type": "integer"},
+          "losses": {"type": "integer"}, "ties": {"type": "integer"}}},
+        "rubric": {"type": "object"},
+        "verdict": {"enum": ["champion", "neutral", "quarantined", "extinct"]}}}}
+  }
+}

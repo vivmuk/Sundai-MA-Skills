@@ -1,0 +1,52 @@
+# Soft fitness dimensions (§12). DIAGNOSTIC ONLY — these do not select.
+#
+# They exist to explain WHY a candidate won or lost, and to populate the
+# dashboard. Selection is pairwise (see pairwise.yaml), because absolute
+# 0-100 scores from a model are noisiest at exactly the margins that matter.
+id: kol-engagement-brief-rubric
+kind: judged
+selection: false
+
+dimensions:
+  expert_specificity:
+    question: What fraction of the ASK THEM questions could only be asked of this expert?
+    scale: 0-100
+    measurement: judged
+  delta_detection:
+    question: Does WHAT'S CHANGED correctly identify what changed since last contact?
+    scale: 0-100
+    measurement: judged
+  question_quality:
+    question: Are the questions open, genuinely uncertain, and worth an expert's time?
+    scale: 0-100
+    measurement: judged
+  anticipation:
+    question: Do THEY MAY ASK questions match what this expert would plausibly raise?
+    scale: 0-100
+    measurement: judged
+  honesty:
+    question: Where the evidence is absent, does the brief say so plainly?
+    scale: 0-100
+    measurement: judged
+  evidence_depth:
+    question: Was the right evidence retrieved, and appraised rather than listed?
+    scale: 0-100
+    measurement: judged
+  conciseness:
+    measurement: deterministic
+    metric: word_count
+    target: two pages, three at the outside
+
+  edit_burden:
+    question: What proportion of the brief did a human reviewer retain?
+    measurement: human
+    weight: null
+    # NULL, not zero, and not a default. A fitness dimension with no data
+    # must read as absent in the lineage — a fabricated middling score would
+    # silently steer selection toward nothing in particular (§Q15).
+
+efficiency:
+  runtime_seconds: {measurement: deterministic}
+  model_calls:     {measurement: deterministic}
+  cost_usd:        {measurement: deterministic}
+  tokens:          {measurement: deterministic}

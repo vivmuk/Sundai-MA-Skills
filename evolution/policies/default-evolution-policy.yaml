@@ -1,0 +1,52 @@
+# How an experiment is shaped and what it is allowed to spend.
+version: 1
+
+population:
+  size: 4                 # candidates per generation
+  survivors: 2            # champions that reproduce
+  neutral_survivors: 1    # preserved for structural novelty, not fitness (§16)
+  generations: 2
+  runs_per_candidate: 2   # per environment; raised to 3 before any promotion
+
+selection:
+  method: blinded_pairwise          # never absolute rubric scores (§Q11)
+  opponent: reigning_champion
+  randomize_order: true
+  strip_identity: true
+  # A candidate whose pairwise win rate falls inside the measured neutral
+  # band is neutral, not better and not worse.
+  neutral_band:
+    source: measured
+    probe: baseline_variance        # G0 x 5 on one environment, before any experiment
+    # Populated by `evolve.py probe`. Until then, no experiment may declare
+    # a champion — an unmeasured band means every result is unattributable.
+    value: null
+
+execution:
+  adapter: venice                   # venice | claude_cli | mock
+  executor_model: z-ai-glm-5-3      # 1M ctx, function calling, reasoning, Private
+  judge_model: gemini-3-8-flash     # different family from the executor by design
+  evidence_mode: replay             # replay | live  (see environments/README.md)
+
+resources:
+  per_candidate:
+    max_model_calls: 20
+    max_external_queries: 15
+    max_runtime_minutes: 10
+  per_experiment:
+    max_usd: 60.00                  # hard abort, not a warning
+  human_review:
+    max_candidates: 3
+
+cost_preflight:
+  # Prices are fetched live from GET /models at run time and never hardcoded
+  # in the engine — a stale constant misquotes silently.
+  required: true
+  blocks_on_confirmation: true
+  record_actuals: true              # written beside the estimate in every manifest
+
+# Reference prices observed 2026-09-06 from docs.venice.ai, for sanity-checking
+# the estimator's output only. The engine does not read these.
+reference_prices_usd_per_mtok:
+  z-ai-glm-5-3:     {input: 1.75, output: 5.50, context: 1000000, privacy: Private}
+  gemini-3-8-flash: {input: 0.94, output: 4.69, context: 1000000, privacy: Anonymized}

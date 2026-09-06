@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "lineage-record.schema.json",
+  "title": "Lineage record",
+  "description": "One append-only JSONL line per evaluated genome. Mortality means a candidate stops receiving evolutionary resources — never that it is deleted (§17). A lineage that failed against today's model may succeed against tomorrow's, and resurrection requires that the record survived.",
+  "type": "object",
+  "required": ["genome_id", "parent", "generation", "verdict", "experiment_id", "recorded_at"],
+  "properties": {
+    "genome_id": {"type": "string"},
+    "parent": {"type": ["string", "null"]},
+    "generation": {"type": "integer"},
+    "mutation": {"type": "object", "properties": {
+      "operator": {"type": "string"}, "rationale": {"type": "string"},
+      "author": {"enum": ["human", "llm_mutator"]},
+      "predicted_effect": {"type": "string"},
+      "observed_effect": {"type": "string",
+        "description": "Recorded even when it contradicts the prediction. This pairing is the raw material for meta-evolution (§27), which is why it is captured from day one and not acted on until there is enough of it."}}},
+    "verdict": {"enum": ["champion", "neutral", "quarantined", "extinct"]},
+    "verdict_reason": {"type": "string"},
+    "gates_failed": {"type": "array", "items": {"type": "string"}},
+    "pairwise_win_rate": {"type": ["number", "null"]},
+    "inside_neutral_band": {"type": ["boolean", "null"]},
+    "experiment_id": {"type": "string"},
+    "artifacts_path": {"type": "string"},
+    "models": {"type": "object"},
+    "cost_usd": {"type": "number"},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "resurrectable": {"type": "boolean", "default": true}
+  }
+}

@@ -1,0 +1,36 @@
+# Which mutation operators are in play and how often they are selected.
+#
+# Generation 1 uses hand-authored variants from the fixed operator library so
+# that a fitness delta is attributable to a known change. The LLM mutator is
+# available from G2 behind a flag; it proposes overlays under the same
+# operator constraints and is subject to identical gates.
+version: 1
+
+mode: fixed_library        # fixed_library | llm_mutator
+llm_mutator_enabled: false
+
+# §27. These weights are the starting prior. They are DATA, not learning:
+# meta-evolution requires far more experiments than the first campaigns will
+# produce, so the engine records every mutation outcome in the lineage and
+# does not adjust these numbers until there is enough evidence to justify it.
+# Any adjustment is a reviewed pull request against this file.
+weights:
+  skill_instruction:   0.20
+  retrieval_order:     0.20
+  examples:            0.15
+  tool_selection:      0.15
+  qa_loop:             0.10
+  model_routing:       0.10
+  context_allocation:  0.10
+
+constraints:
+  # A mutation is rejected before scoring if it does any of these.
+  - may not edit Level 0 constitution files
+  - may not edit the workflow's Level 1 purpose statement
+  - may not remove a registry invariant
+  - may not alter any evaluator, gate or threshold
+  - may not introduce an external action beyond the constitution's permitted list
+  - must be expressible as an overlay patch against the ancestor
+
+recombination:
+  enabled: false           # §19, from G3 onward once two lineages diverge usefully
