@@ -18,8 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Download public zipball by commit SHA
         run: |
@@ -28,8 +26,9 @@ jobs:
           curl -fsSL -o /tmp/ma.zip "https://codeload.github.com/Open-Medical-Affairs/Medical-Affairs-Skills/zip/${SHA}"
           mkdir -p /tmp/ma-src
           unzip -q /tmp/ma.zip -d /tmp/ma-src
-          SRC=$(find /tmp/ma-src -mindepth 1 -maxdepth 1 -type d | head -n 1)
+          SRC=$(find /tmp/ma-src -mindepth 1 -maxdepth 1 -type d -print -quit)
           echo "SRC=$SRC"
+          test -n "$SRC"
           test -d "$SRC/skills"
           test -f "$SRC/README.md"
           cp -f ORIGIN.md /tmp/ORIGIN.md.keep || true
