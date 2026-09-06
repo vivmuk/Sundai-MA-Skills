@@ -28,7 +28,6 @@ jobs:
           URL="https://codeload.github.com/Open-Medical-Affairs/Medical-Affairs-Skills/zip/refs/heads/${BRANCH}"
           echo "Downloading $URL"
           curl -fsSL -o /tmp/ma-skills.zip "$URL"
-          file /tmp/ma-skills.zip
           ls -la /tmp/ma-skills.zip
           rm -rf /tmp/ma-skills-src
           mkdir -p /tmp/ma-skills-src
@@ -44,8 +43,8 @@ jobs:
           mkdir -p .github/workflows
           printf '%s\n' 'name: import-upstream-once' '' 'on:' '  workflow_dispatch:' '' 'jobs:' '  noop:' '    runs-on: ubuntu-latest' '    steps:' '      - run: echo done' > .github/workflows/import-upstream-once.yml
           echo "imported_from=Open-Medical-Affairs/Medical-Affairs-Skills@${BRANCH}" > .github/IMPORT-SOURCE.txt
-          find . -type f ! -path './.git/*' | wc -l
-          ls -la skills | head
+          echo "file_count=$(find . -type f ! -path './.git/*' | wc -l)"
+          ls skills | head
 
       - name: Commit and push
         shell: bash
