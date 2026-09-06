@@ -19,59 +19,41 @@ jobs:
     steps:
       - name: Checkout destination
         uses: actions/checkout@v4
-        with:
-          path: dest
 
       - name: Checkout upstream source branch
         uses: actions/checkout@v4
         with:
           repository: Open-Medical-Affairs/Medical-Affairs-Skills
           ref: claude/medical-affairs-agent-workshop-ttpxhf
-          path: src
+          path: _upstream
 
-      - name: Copy upstream tree into destination root
+      - name: Replace working tree with upstream files
         shell: bash
         run: |
           set -eux
-          if [ -f dest/ORIGIN.md ]; then cp dest/ORIGIN.md /tmp/ORIGIN.md.keep; fi
-          find dest -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-          cp -a src/. dest/
-          rm -rf dest/.git
-          if [ -f /tmp/ORIGIN.md.keep ]; then cp /tmp/ORIGIN.md.keep dest/ORIGIN.md; fi
-          mkdir -p dest/.github/workflows
-          cat > dest/.github/workflows/import-upstream-once.yml << 'YAML'
-          name: import-upstream-once
-          on:
-            workflow_dispatch:
-          jobs:
-            noop:
-              runs-on: ubuntu-latest
-              steps:
-                - run: echo done
-          YAML
-          # strip leading spaces from the YAML heredoc above
-          python3 -c "from pathlib import Path; p=Path('dest/.github/workflows/import-upstream-once.yml'); t=p.read_text(); p.write_text('\n'.join(line[10:] if line.startswith('          ') else line for line in t.splitlines())+'\n')"
-          echo "imported_from=Open-Medical-Affairs/Medical-Affairs-Skills@claude/medical-affairs-agent-workshop-ttpxhf" > dest/.github/IMPORT-SOURCE.txt
-          test -d dest/skills
-          test -f dest/README.md
-          test -f dest/LICENSE
-          test -f dest/SKILLS-INDEX.md
-          find dest -type f ! -path 'dest/.git/*' | wc -l
+          if [ -f ORIGIN.md ]; then cp ORIGIN.md /tmp/ORIGIN.md.keep; fi
+          rm -rf _upstream/.git
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name '_upstream' -exec rm -rf {} +
+          cp -a _upstream/. .
+          rm -rf _upstream
+          if [ -f /tmp/ORIGIN.md.keep ]; then cp /tmp/ORIGIN.md.keep ORIGIN.md; fi
+          mkdir -p .github/workflows
+          printf '%s\n' 'name: import-upstream-once' '' 'on:' '  workflow_dispatch:' '' 'jobs:' '  noop:' '    runs-on: ubuntu-latest' '    steps:' '      - run: echo done' > .github/workflows/import-upstream-once.yml
+          echo 'imported_from=Open-Medical-Affairs/Medical-Affairs-Skills@claude/medical-affairs-agent-workshop-ttpxhf' > .github/IMPORT-SOURCE.txt
+          test -d skills
+          test -f README.md
+          test -f LICENSE
+          test -f SKILLS-INDEX.md
+          test -d .git
+          find . -type f ! -path './.git/*' | wc -l
 
-      - name: Commit and push into destination repo
-        working-directory: dest
+      - name: Commit and push
         shell: bash
         run: |
           set -eux
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # recreate git link to this repo (src copy removed .git)
-          if [ ! -d .git ]; then
-            echo "ERROR: destination .git missing"
-            exit 1
-          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
-          git status --short | head -n 50 || true
-          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
-          git commit -m "Import full Open-Medical-Affairs/Medical-Affairs-Skills (branch claude/medical-affairs-agent-workshop-ttpxhf)"
+          if git diff --cached --quiet; then echo 'No changes'; exit 0; fi
+          git commit -m 'Import full Open-Medical-Affairs/Medical-Affairs-Skills (branch claude/medical-affairs-agent-workshop-ttpxhf)'
           git push origin HEAD:main
