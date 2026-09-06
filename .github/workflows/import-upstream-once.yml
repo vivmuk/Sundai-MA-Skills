@@ -25,12 +25,18 @@ jobs:
         run: |
           set -euo pipefail
           BRANCH="claude/medical-affairs-agent-workshop-ttpxhf"
-          curl -fsSL -o /tmp/ma-skills.zip "https://api.github.com/repos/Open-Medical-Affairs/Medical-Affairs-Skills/zipball/${BRANCH}"
+          URL="https://codeload.github.com/Open-Medical-Affairs/Medical-Affairs-Skills/zip/refs/heads/${BRANCH}"
+          echo "Downloading $URL"
+          curl -fsSL -o /tmp/ma-skills.zip "$URL"
+          file /tmp/ma-skills.zip
+          ls -la /tmp/ma-skills.zip
           rm -rf /tmp/ma-skills-src
           mkdir -p /tmp/ma-skills-src
           unzip -q /tmp/ma-skills.zip -d /tmp/ma-skills-src
           SRC=$(find /tmp/ma-skills-src -mindepth 1 -maxdepth 1 -type d | head -1)
           echo "SRC=$SRC"
+          test -n "$SRC"
+          test -d "$SRC/skills"
           if [ -f ORIGIN.md ]; then cp ORIGIN.md /tmp/ORIGIN.md.keep; fi
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           cp -a "$SRC"/. .
@@ -39,6 +45,7 @@ jobs:
           printf '%s\n' 'name: import-upstream-once' '' 'on:' '  workflow_dispatch:' '' 'jobs:' '  noop:' '    runs-on: ubuntu-latest' '    steps:' '      - run: echo done' > .github/workflows/import-upstream-once.yml
           echo "imported_from=Open-Medical-Affairs/Medical-Affairs-Skills@${BRANCH}" > .github/IMPORT-SOURCE.txt
           find . -type f ! -path './.git/*' | wc -l
+          ls -la skills | head
 
       - name: Commit and push
         shell: bash
