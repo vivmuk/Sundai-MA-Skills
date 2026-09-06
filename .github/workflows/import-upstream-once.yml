@@ -21,14 +21,13 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          repository: vivmuk/Medical-Affairs-Skills
+          repository: Open-Medical-Affairs/Medical-Affairs-Skills
           ref: refs/heads/claude/medical-affairs-agent-workshop-ttpxhf
           path: _upstream
 
       - name: Sync upstream files into repo root
         run: |
           set -eux
-          ls -la _upstream | sed -n '1,20p'
           test -d _upstream/skills
           test -f _upstream/README.md
           cp -f ORIGIN.md /tmp/ORIGIN.md.keep || true
@@ -36,7 +35,7 @@ jobs:
           if [ -f /tmp/ORIGIN.md.keep ]; then cp -f /tmp/ORIGIN.md.keep ORIGIN.md; fi
           mkdir -p .github/workflows
           printf '%s\n' 'name: import-upstream-once' '' 'on:' '  workflow_dispatch:' '' 'jobs:' '  noop:' '    runs-on: ubuntu-latest' '    steps:' '      - run: echo done' > .github/workflows/import-upstream-once.yml
-          echo 'imported_from=vivmuk/Medical-Affairs-Skills@claude/medical-affairs-agent-workshop-ttpxhf' > .github/IMPORT-SOURCE.txt
+          echo 'imported_from=Open-Medical-Affairs/Medical-Affairs-Skills@claude/medical-affairs-agent-workshop-ttpxhf' > .github/IMPORT-SOURCE.txt
           test -d skills
           test -f README.md
           test -f LICENSE
@@ -52,5 +51,5 @@ jobs:
           git add -A
           git status
           if git diff --cached --quiet; then echo 'No changes'; exit 0; fi
-          git commit -m 'Import full Medical-Affairs-Skills tree for local evolution'
+          git commit -m 'Import full Open-Medical-Affairs/Medical-Affairs-Skills (branch claude/medical-affairs-agent-workshop-ttpxhf)'
           git push origin HEAD:main
