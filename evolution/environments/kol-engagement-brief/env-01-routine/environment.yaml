@@ -1,0 +1,12 @@
+environment_id: env-01-routine
+workflow: kol-engagement-brief
+target_expert: Dr Adaeze Okafor
+situation: >-
+  Established expert, five months since the last interaction, full notes
+  available and nothing unusual in the material. The baseline: what the
+  workflow does when everything it needs is present.
+shared_inputs:
+  - workshop/data/oncology-mm/kol-dossiers.md
+  - workshop/data/oncology-mm/interaction-notes.md
+  - workshop/data/oncology-mm/product-profile.md
+  - workshop/data/oncology-mm/evidence-landscape.md

@@ -10,9 +10,11 @@ The principle it is built around:
 > **Keep Medical Affairs purpose and safety boundaries stable. Allow the
 > strategies used to achieve that purpose to evolve.**
 
-**Status: specification.** This directory contains the design, the schemas
-and the gate definitions. No runner code, and nothing here has executed or
-spent anything. Read `DECISIONS.md` for the reasoning behind each choice.
+**Status: running, against the mock adapter.** The engine, the gates, the
+tournament, the lineage and the promotion path all work end to end and are
+covered by an offline test suite. What has *not* run is a real model: that
+needs a Venice key and network egress. Read `DECISIONS.md` for the reasoning
+behind each choice, including the two that changed during the build.
 
 ---
 
@@ -150,15 +152,50 @@ model used, so that question can be answered later rather than assumed.
 - No Twin state (§38). The public repository holds schemas, synthetic
   examples and public evidence. Company data stays outside it.
 
+## Running it
+
+Everything below is offline and free. `--adapter mock` replays deterministic
+phenotypes; drop it to use Venice, which needs `VENICE_API_KEY` and egress to
+`api.venice.ai`.
+
+```bash
+python3 scripts/evolve.py list
+python3 scripts/evolve.py show  kol-engagement-brief
+python3 scripts/evolve.py probe kol-engagement-brief --adapter mock --yes   # measure the band
+python3 scripts/evolve.py run   kol-engagement-brief --adapter mock --yes   # generation 1
+python3 scripts/evolve.py tree  kol-engagement-brief
+python3 scripts/promote.py      kol-engagement-brief                        # champion -> patch + PR body
+python3 scripts/evaluate.py     <experiment-id>                             # re-run gates on stored artifacts
+python3 scripts/selftest_evolution.py                                       # 36 checks
+```
+
+`run` refuses outright until the band has been measured, and every command
+that spends prints a preflight and waits for confirmation.
+
+### What the mock proves, and what it does not
+
+The mock adapter builds a brief from the environment's own material and
+carries a hidden quality marker that the mock judge reads. That is enough to
+prove the **plumbing**: overlays apply exactly, each gate fires on the defect
+it exists to catch, blinding strips identity, the band is measured rather than
+assumed, the lineage records, and the promotion patch applies to the real
+skill.
+
+It proves **nothing** about whether an evolved skill writes a better brief.
+Only a real runtime can answer that. Every number the mock produces is a test
+fixture, which is why mock output is git-ignored rather than committed:
+numbers that look like evidence and are not are the specific failure this
+project exists to avoid.
+
 ## Build order
 
-1. Schemas, lineage store, gates, cost estimator, **mock adapter** — the
-   whole engine testable in CI for $0.
-2. Four environments with labelled expectations; fixtures recorded once.
-3. Venice adapter; three-model bake-off; noise-floor probe.
-4. First campaign.
-5. Promotion path: branch, evidence pack, draft PR.
+1. ~~Schemas, lineage store, gates, cost estimator, mock adapter.~~ Done.
+2. ~~Four environments with labelled expectations and authored corpora.~~ Done.
+3. ~~Promotion path: patch, evidence pack, PR body.~~ Done.
+4. **Venice adapter against a real model.** Written and unit-tested; never
+   executed. Needs `VENICE_API_KEY` and egress to `api.venice.ai`.
+5. **Three-model bake-off**, then a real noise-floor probe. Until a real band
+   is measured, no real champion can be declared — the engine enforces this.
+6. First real campaign.
 
-Steps 1–2 need no network beyond GitHub. Step 2's recording and everything
-after needs egress to `api.venice.ai`, `eutils.ncbi.nlm.nih.gov`,
-`clinicaltrials.gov` and `api.fda.gov`.
+Only steps 4-6 need network. Everything before them runs anywhere.

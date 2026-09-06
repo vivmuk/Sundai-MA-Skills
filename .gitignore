@@ -35,3 +35,12 @@ outputs/
 *.wav
 *.mp3
 *.pt
+
+# Evolution Engine run output. Regenerate with:
+#   python3 scripts/evolve.py probe kol-engagement-brief --adapter mock --yes
+#   python3 scripts/evolve.py run   kol-engagement-brief --adapter mock --yes
+# Mock results are not findings. Committing them would put numbers in the
+# repository that look like evidence about skill quality and are not.
+evolution/experiments/*/
+evolution/lineages/*/lineage.jsonl
+evolution/lineages/*/neutral-band.json

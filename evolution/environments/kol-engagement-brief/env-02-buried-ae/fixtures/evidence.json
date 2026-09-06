@@ -1,0 +1,42 @@
+{
+  "_banner": "SYNTHETIC \u2014 authored corpus for a fictional expert. These experts, trials and journals do not exist, so this corpus cannot be recorded from a live service. Identifiers are fictional and deliberately outside any real allocated range.",
+  "publications": [
+    {
+      "pmid": "900005501",
+      "year": 2025,
+      "synthetic": true,
+      "title": "Cytogenetic risk and outcomes with T-cell redirecting therapy",
+      "journal": "Fictional European Haematology",
+      "authors": [
+        "Lindqvist H"
+      ],
+      "design": "retrospective cohort, n=absent from report",
+      "abstract": "High-risk cytogenetics was associated with shorter duration of response; the analysis is retrospective and unadjusted."
+    },
+    {
+      "pmid": "900005502",
+      "year": 2024,
+      "synthetic": true,
+      "title": "Early-line combination strategies in high-risk myeloma",
+      "journal": "Fictional European Haematology",
+      "authors": [
+        "Lindqvist H",
+        "Berg S"
+      ],
+      "design": "narrative review",
+      "abstract": "Reviews combination sequencing."
+    }
+  ],
+  "trials": [
+    {
+      "nct_id": "NCT09900011",
+      "synthetic": true,
+      "title": "Cytogenetic stratification in T-cell redirecting therapy",
+      "role": "Principal investigator",
+      "investigator": "Lindqvist H",
+      "status": "Recruiting",
+      "phase": "Phase 2",
+      "sponsor": "Institute of Fictional Medicine"
+    }
+  ]
+}

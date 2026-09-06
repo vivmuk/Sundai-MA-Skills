@@ -1,0 +1,29 @@
+{
+  "_banner": "SYNTHETIC \u2014 authored corpus for a fictional expert. These experts, trials and journals do not exist, so this corpus cannot be recorded from a live service. Identifiers are fictional and deliberately outside any real allocated range.",
+  "publications": [
+    {
+      "pmid": "900006601",
+      "year": 2025,
+      "synthetic": true,
+      "title": "Outpatient step-up dosing: a feasibility analysis in community practice",
+      "journal": "Fictional Journal of Community Oncology",
+      "authors": [
+        "Vega M"
+      ],
+      "design": "prospective feasibility study, n=41",
+      "abstract": "Outpatient step-up dosing was feasible in 41 patients with protocolised monitoring; the study was not powered for safety."
+    }
+  ],
+  "trials": [
+    {
+      "nct_id": "NCT09900021",
+      "synthetic": true,
+      "title": "Community delivery of bispecific step-up dosing",
+      "role": "Site investigator",
+      "investigator": "Vega M",
+      "status": "Recruiting",
+      "phase": "Phase 4",
+      "sponsor": "Riverbend Regional Health"
+    }
+  ]
+}

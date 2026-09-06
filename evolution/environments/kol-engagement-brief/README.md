@@ -46,10 +46,17 @@ known_gaps:       # what genuinely cannot be determined from the material
 The judge never sees this file. The gates do. A judge holding the answer key
 scores the answer key.
 
-## Evidence: replay by default
+## Evidence: an authored corpus, replayed
 
-Each environment records its external evidence **once** and replays it for
-every candidate, hashed into the experiment manifest.
+Each environment carries its evidence in `fixtures/evidence.json`, hashed into
+the experiment manifest and replayed identically for every candidate.
+
+The corpus is **authored, not recorded**. Every expert, trial and journal here
+is fictional, so there is nothing upstream to record: a live PubMed search for
+Dr Adaeze Okafor returns nothing, and a fixture captured from one would be an
+empty file. Live mode therefore raises rather than silently returning nothing.
+The practical consequence is good — these environments run entirely offline,
+with no API key, no rate limit and no network.
 
 This is not a caching optimisation. If candidate A and candidate B query
 PubMed live on different afternoons, they are scored against different
@@ -57,10 +64,12 @@ evidence, and no fitness difference between them can be attributed to the
 mutation rather than to the retrieval. Replay is what makes a comparison
 mean anything.
 
-- `--replay` (default): offline, free, reproducible, no rate limits.
-- `--live`: deliberate re-recording, used for the §32 "the environment
-  changed" re-test — which is a designed experiment, not an accident.
+An "environment change" (§32) is therefore made by **editing the corpus** —
+which is exactly what `env-04` is: `env-01` plus one new publication that
+shifts the expert's position. That makes environmental change a variable you
+control and can diff, rather than something that happens to you between runs.
 
-Recording requires network access to `eutils.ncbi.nlm.nih.gov`,
-`clinicaltrials.gov` and `api.fda.gov`. Once recorded and committed,
-every subsequent run needs only the inference endpoint.
+Real evidence enters only when a workflow is evolved against real experts.
+That is a different kind of environment, it needs egress to
+`eutils.ncbi.nlm.nih.gov` and `clinicaltrials.gov`, and it carries data-
+protection consequences the synthetic set does not.

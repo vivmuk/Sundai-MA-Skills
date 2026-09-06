@@ -1,0 +1,92 @@
+{
+  "_banner": "SYNTHETIC \u2014 authored corpus for a fictional expert. These experts, trials and journals do not exist, so this corpus cannot be recorded from a live service. Identifiers are fictional and deliberately outside any real allocated range.",
+  "publications": [
+    {
+      "pmid": "900004411",
+      "year": 2026,
+      "synthetic": true,
+      "title": "Eighteen-month outcomes after MRD-guided discontinuation: restart rates and predictors",
+      "journal": "Journal of Fictional Haematology",
+      "authors": [
+        "Okafor A",
+        "Ndiaye P",
+        "Rees T"
+      ],
+      "design": "prospective cohort extension, n=94, median follow-up 18 months",
+      "published": "six weeks ago \u2014 after the last recorded interaction",
+      "abstract": "Of 94 patients who discontinued, 29 (31%) restarted therapy within 18 months. Restart was not predicted by depth of response at discontinuation. The authors conclude that the operative question is patient selection, not whether discontinuation is possible."
+    },
+    {
+      "pmid": "900004401",
+      "year": 2025,
+      "synthetic": true,
+      "title": "MRD-guided discontinuation in sustained responders: a prospective cohort",
+      "journal": "Journal of Fictional Haematology",
+      "authors": [
+        "Okafor A",
+        "Ndiaye P"
+      ],
+      "design": "prospective single-arm cohort, n=94",
+      "abstract": "Among 94 sustained responders meeting MRD-negativity criteria, therapy was discontinued under protocol. The analysis addresses feasibility; it is not powered for safety of discontinuation."
+    },
+    {
+      "pmid": "900004402",
+      "year": 2024,
+      "synthetic": true,
+      "title": "Treatment burden in relapsed myeloma: patient-reported outcomes",
+      "journal": "Fictional Journal of Supportive Oncology",
+      "authors": [
+        "Okafor A"
+      ],
+      "design": "cross-sectional PRO survey, n=212",
+      "abstract": "Treatment burden was the dominant driver of stated preference, ahead of response depth."
+    },
+    {
+      "pmid": "900004403",
+      "year": 2024,
+      "synthetic": true,
+      "title": "Infection prophylaxis practice variation across 14 centres",
+      "journal": "Fictional Journal of Infection in Oncology",
+      "authors": [
+        "Okafor A",
+        "Rees T"
+      ],
+      "design": "retrospective multicentre audit",
+      "abstract": "Prophylaxis practice varied substantially; infection rates were not comparable across centres owing to differing denominators."
+    },
+    {
+      "pmid": "900004404",
+      "year": 2023,
+      "synthetic": true,
+      "title": "Rethinking duration of therapy in the bispecific era",
+      "journal": "Journal of Fictional Haematology",
+      "authors": [
+        "Okafor A"
+      ],
+      "design": "editorial",
+      "abstract": "Argues that response-rate evidence is being used to answer duration questions it was not designed to answer."
+    }
+  ],
+  "trials": [
+    {
+      "nct_id": "NCT09900001",
+      "synthetic": true,
+      "title": "Bispecific therapy with response-adapted discontinuation in RRMM",
+      "role": "Principal investigator",
+      "investigator": "Okafor A",
+      "status": "Recruiting",
+      "phase": "Phase 2",
+      "sponsor": "Fictional Cancer Centre"
+    },
+    {
+      "nct_id": "NCT09900002",
+      "synthetic": true,
+      "title": "Treatment burden and de-escalation in sustained responders",
+      "role": "Principal investigator",
+      "investigator": "Okafor A",
+      "status": "Active, not recruiting",
+      "phase": "Phase 2",
+      "sponsor": "Fictional Cancer Centre"
+    }
+  ]
+}

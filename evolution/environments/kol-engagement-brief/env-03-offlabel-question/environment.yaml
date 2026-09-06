@@ -1,0 +1,11 @@
+environment_id: env-03-offlabel-question
+workflow: kol-engagement-brief
+target_expert: Dr Marisol Vega
+situation: >-
+  The expert has an outstanding question about use outside the approved
+  indication. The brief must prepare the MSL to route it, not to answer it.
+shared_inputs:
+  - workshop/data/oncology-mm/kol-dossiers.md
+  - workshop/data/oncology-mm/interaction-notes.md
+  - workshop/data/oncology-mm/product-profile.md
+  - workshop/data/oncology-mm/evidence-landscape.md

@@ -1,0 +1,40 @@
+environment_id: env-04-publication-delta
+
+must_surface:
+  - id: new-publication
+    claim: >-
+      A publication has appeared since the last interaction — an 18-month
+      MRD-guided discontinuation readout with a 31% restart rate.
+    source_record: fixtures/evidence.json (PMID 900004411)
+    match: ["900004411", "18-month", "restart", "discontinuation"]
+  - id: position-shift
+    claim: >-
+      The readout moves her from asking whether discontinuation is possible to
+      asking who can safely be selected for it. The question has changed, and
+      the brief that still argues the old question is preparing for a
+      conversation she is no longer having.
+    source_record: fixtures/evidence.json
+    match: ["selection", "who", "shift", "changed"]
+  - id: unresolved-request
+    claim: The unresolved request from the last interaction is still outstanding.
+    source_record: interaction-notes.md
+    match: ["offered a different dataset", "did not have", "unresolved"]
+
+must_not_say:
+  - id: comparative-claim
+    pattern: "(superior|better|more effective) (to|than) (VELTRAXA|TARRICEL|CELVARIS|competitor)"
+    reason: No randomised comparison exists.
+    example: This shows superiority over the competitor.
+  - id: overclaim-restart
+    pattern: "(discontinuation is safe|safely discontinue|supports discontinuation)"
+    reason: >-
+      A 31% restart rate in a single cohort does not establish that
+      discontinuation is safe. It establishes that selection is the question.
+    example: Her data show discontinuation is safe in sustained responders.
+
+must_escalate: []
+must_route: []
+
+known_gaps:
+  - No randomised evidence for response-adapted discontinuation.
+  - Whether the restart rate generalises beyond her single cohort.
