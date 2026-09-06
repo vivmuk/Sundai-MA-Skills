@@ -19,40 +19,59 @@ jobs:
     steps:
       - name: Checkout destination
         uses: actions/checkout@v4
+        with:
+          path: dest
 
-      - name: Import upstream zipball at repo root
+      - name: Checkout upstream source branch
+        uses: actions/checkout@v4
+        with:
+          repository: Open-Medical-Affairs/Medical-Affairs-Skills
+          ref: claude/medical-affairs-agent-workshop-ttpxhf
+          path: src
+
+      - name: Copy upstream tree into destination root
         shell: bash
         run: |
-          set -euo pipefail
-          BRANCH="claude/medical-affairs-agent-workshop-ttpxhf"
-          URL="https://codeload.github.com/Open-Medical-Affairs/Medical-Affairs-Skills/zip/refs/heads/${BRANCH}"
-          echo "Downloading $URL"
-          curl -fsSL -o /tmp/ma-skills.zip "$URL"
-          ls -la /tmp/ma-skills.zip
-          rm -rf /tmp/ma-skills-src
-          mkdir -p /tmp/ma-skills-src
-          unzip -q /tmp/ma-skills.zip -d /tmp/ma-skills-src
-          SRC=$(find /tmp/ma-skills-src -mindepth 1 -maxdepth 1 -type d | head -1)
-          echo "SRC=$SRC"
-          test -n "$SRC"
-          test -d "$SRC/skills"
-          if [ -f ORIGIN.md ]; then cp ORIGIN.md /tmp/ORIGIN.md.keep; fi
-          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-          cp -a "$SRC"/. .
-          if [ -f /tmp/ORIGIN.md.keep ]; then cp /tmp/ORIGIN.md.keep ORIGIN.md; fi
-          mkdir -p .github/workflows
-          printf '%s\n' 'name: import-upstream-once' '' 'on:' '  workflow_dispatch:' '' 'jobs:' '  noop:' '    runs-on: ubuntu-latest' '    steps:' '      - run: echo done' > .github/workflows/import-upstream-once.yml
-          echo "imported_from=Open-Medical-Affairs/Medical-Affairs-Skills@${BRANCH}" > .github/IMPORT-SOURCE.txt
-          echo "file_count=$(find . -type f ! -path './.git/*' | wc -l)"
-          ls skills | head
+          set -eux
+          if [ -f dest/ORIGIN.md ]; then cp dest/ORIGIN.md /tmp/ORIGIN.md.keep; fi
+          find dest -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          cp -a src/. dest/
+          rm -rf dest/.git
+          if [ -f /tmp/ORIGIN.md.keep ]; then cp /tmp/ORIGIN.md.keep dest/ORIGIN.md; fi
+          mkdir -p dest/.github/workflows
+          cat > dest/.github/workflows/import-upstream-once.yml << 'YAML'
+          name: import-upstream-once
+          on:
+            workflow_dispatch:
+          jobs:
+            noop:
+              runs-on: ubuntu-latest
+              steps:
+                - run: echo done
+          YAML
+          # strip leading spaces from the YAML heredoc above
+          python3 -c "from pathlib import Path; p=Path('dest/.github/workflows/import-upstream-once.yml'); t=p.read_text(); p.write_text('\n'.join(line[10:] if line.startswith('          ') else line for line in t.splitlines())+'\n')"
+          echo "imported_from=Open-Medical-Affairs/Medical-Affairs-Skills@claude/medical-affairs-agent-workshop-ttpxhf" > dest/.github/IMPORT-SOURCE.txt
+          test -d dest/skills
+          test -f dest/README.md
+          test -f dest/LICENSE
+          test -f dest/SKILLS-INDEX.md
+          find dest -type f ! -path 'dest/.git/*' | wc -l
 
-      - name: Commit and push
+      - name: Commit and push into destination repo
+        working-directory: dest
         shell: bash
         run: |
-          set -euo pipefail
+          set -eux
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # recreate git link to this repo (src copy removed .git)
+          if [ ! -d .git ]; then
+            echo "ERROR: destination .git missing"
+            exit 1
+          fi
           git add -A
+          git status --short | head -n 50 || true
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi
           git commit -m "Import full Open-Medical-Affairs/Medical-Affairs-Skills (branch claude/medical-affairs-agent-workshop-ttpxhf)"
           git push origin HEAD:main
