@@ -1,4 +1,3 @@
-# Trigger import run 2026-09-06
 name: import-upstream-once
 
 on:
@@ -19,8 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
-      - name: Download public zipball by commit SHA
+      - name: Download public zipball and sync tree
         run: |
           set -eux
           SHA=b688885a6e04ba00f7894a544391b525ee0a2e58
@@ -32,12 +33,21 @@ jobs:
           test -n "$SRC"
           test -d "$SRC/skills"
           test -f "$SRC/README.md"
+
+          # Preserve destination-only files that GITHUB_TOKEN cannot rewrite workflows for
           cp -f ORIGIN.md /tmp/ORIGIN.md.keep || true
-          rsync -a --delete --exclude '.git' "$SRC"/ ./
-          if [ -f /tmp/ORIGIN.md.keep ]; then cp -f /tmp/ORIGIN.md.keep ORIGIN.md; fi
+          mkdir -p /tmp/wf.keep
+          if [ -d .github/workflows ]; then cp -a .github/workflows/. /tmp/wf.keep/; fi
+
+          # Sync upstream tree but never replace .github/workflows (GITHUB_TOKEN cannot push workflow diffs)
+          rsync -a --delete --exclude '.git' --exclude '.github/workflows' "$SRC"/ ./
+
           mkdir -p .github/workflows
-          printf '%s\n' 'name: import-upstream-once' '' 'on:' '  workflow_dispatch:' '' 'jobs:' '  noop:' '    runs-on: ubuntu-latest' '    steps:' '      - run: echo done' > .github/workflows/import-upstream-once.yml
+          cp -a /tmp/wf.keep/. .github/workflows/
+          if [ -f /tmp/ORIGIN.md.keep ]; then cp -f /tmp/ORIGIN.md.keep ORIGIN.md; fi
+
           echo "imported_from=Open-Medical-Affairs/Medical-Affairs-Skills@${SHA}" > .github/IMPORT-SOURCE.txt
+
           test -d skills
           test -f README.md
           test -f LICENSE
@@ -51,6 +61,9 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
+          # Extra safety: do not stage workflow changes if any slipped in
+          git restore --staged .github/workflows 2>/dev/null || true
+          git checkout -- .github/workflows 2>/dev/null || true
           git status
           if git diff --cached --quiet; then echo 'No changes'; exit 0; fi
           git commit -m 'Import full Open-Medical-Affairs/Medical-Affairs-Skills (commit b688885)'
