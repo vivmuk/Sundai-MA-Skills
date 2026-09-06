@@ -1,0 +1,31 @@
+# HARD GATE — deterministic. No model judges this.
+id: citation-integrity
+kind: deterministic
+blocking: true
+outcome_on_failure: extinct
+
+description: >-
+  Every citation in the artifact must resolve to a source that was actually
+  retrieved during the run. This is the cheapest gate and the most important
+  one: it is the only fitness dimension that cannot be argued with, and a
+  fabricated citation is not compensable by any score elsewhere (§11).
+
+checks:
+  - id: resolvable
+    rule: >-
+      Every PMID, NCT number and DOI in the artifact appears in the run's
+      fixture corpus or its recorded tool results.
+    failure: fabricated_or_unretrieved_source
+  - id: attribution
+    rule: >-
+      Every claim carrying a citation is supported by that source's retrieved
+      content, matched on the claim's numeric and design assertions.
+    failure: misattributed_claim
+  - id: no_bare_identifier
+    rule: >-
+      An eight-digit number is not a PMID unless it resolves as one. See
+      workshop/evaluation/rubric.md.
+    failure: spurious_identifier
+
+implementation: scripts/evaluate.py::citation_gate
+cost_usd: 0.00

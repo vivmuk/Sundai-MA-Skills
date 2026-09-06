@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "genome.schema.json",
+  "title": "Genome",
+  "description": "A candidate is a base skill commit plus ordered overlay patches. Never a full copy of a skill, and never written to a path a skill loader can discover.",
+  "type": "object",
+  "required": ["genome_id", "workflow", "parent", "base", "overlays", "runtime"],
+  "properties": {
+    "genome_id": {"type": "string", "pattern": "^[a-z0-9-]+/g[0-9]+[a-z]?$",
+      "description": "e.g. kol-engagement-brief/g1c"},
+    "workflow": {"type": "string"},
+    "generation": {"type": "integer", "minimum": 0},
+    "parent": {"type": ["string", "null"], "description": "genome_id, or null for the G0 ancestor"},
+    "base": {
+      "type": "object",
+      "required": ["skill_path", "skill_commit"],
+      "properties": {
+        "skill_path": {"type": "string"},
+        "skill_commit": {"type": "string"},
+        "requires": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "overlays": {
+      "type": "array",
+      "description": "Ordered patches applied to the base. Empty for G0.",
+      "items": {
+        "type": "object",
+        "required": ["operator", "patch_path", "rationale"],
+        "properties": {
+          "operator": {"enum": ["skill_instruction", "retrieval_order", "tool_selection",
+                                 "context_allocation", "model_routing", "output_structure",
+                                 "examples", "qa_loop", "recombination"]},
+          "patch_path": {"type": "string"},
+          "rationale": {"type": "string", "description": "What this change is predicted to improve, written before the run."},
+          "author": {"enum": ["human", "llm_mutator"]}
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "required": ["adapter", "executor_model"],
+      "properties": {
+        "adapter": {"enum": ["venice", "claude_cli", "mock", "hermes"]},
+        "executor_model": {"type": "string"},
+        "model_routing": {"type": "object", "description": "Optional per-stage model assignment (§14E)."}
+      }
+    },
+    "status": {"enum": ["candidate", "champion", "neutral", "quarantined", "extinct"]}
+  }
+}

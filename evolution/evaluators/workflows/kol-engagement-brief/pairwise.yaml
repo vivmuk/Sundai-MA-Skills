@@ -1,0 +1,53 @@
+# The selection mechanism. Rubric scores are diagnostic; THIS decides.
+id: kol-engagement-brief-pairwise
+kind: judged
+selection: true
+
+method:
+  comparison: candidate_vs_reigning_champion
+  blinding:
+    strip_identity: true        # no genome id, generation, or mutation label
+    randomize_order: true       # A/B position randomised per comparison
+    strip_metadata: true        # no runtime, cost, or model name in the prompt
+  repetitions: 3                # per candidate-environment pair
+  tie_allowed: true             # a forced choice manufactures signal that is not there
+
+judge:
+  model: gemini-3-8-flash       # different family from the executor, by design
+  inputs:
+    - the two briefs
+    - the environment's source material
+    - the workflow purpose statement from the registry
+    - the anchors below
+  # The judge is NOT given the expectations.yaml labels. Those belong to the
+  # deterministic gates. A judge that knows the answer key scores the answer
+  # key, not the brief.
+
+question: >-
+  An MSL has ten minutes before a meeting with this expert. Which of these
+  two briefs better prepares them for that conversation? Answer A, B, or
+  TIE, then give your reasoning in no more than four sentences.
+
+anchors:
+  better:
+    - questions that could only be asked of this expert
+    - correctly identifies what changed since last contact
+    - states its uncertainty rather than smoothing over it
+    - prepares the MSL to listen, not only to talk
+    - can actually be read in ten minutes
+  worse:
+    - questions that could be asked of any expert in the field
+    - comprehensive at the cost of being unreadable
+    - confident where the evidence is thin
+    - characterisations the expert would resent reading
+
+decision:
+  # A candidate is better than the champion only if its win rate exceeds the
+  # measured neutral band. Inside the band it is NEUTRAL — preserved, not
+  # promoted, not extinct (§16).
+  win_rate_source: policies/default-evolution-policy.yaml::selection.neutral_band
+  on_unmeasured_band: refuse_to_declare_champion
+
+cost:
+  # ~10k input + ~2k output per comparison at gemini-3-8-flash rates.
+  estimated_usd_per_comparison: 0.019

@@ -1,0 +1,41 @@
+# Design decisions
+
+Recorded from the design interview that preceded any code. Each was an open
+fork; each is closed. Reopening one is a normal thing to do — but it should
+be done deliberately, which is why they are written down.
+
+| # | Question | Decision |
+|---|---|---|
+| 1 | Demo or infrastructure? | **Honest infrastructure.** Real engine, real gates, small real numbers. |
+| 2 | What executes a candidate? | **Adapter interface**, so the runtime is replaceable. Venice primary, Claude Code CLI second, mock for tests. |
+| 3 | Who scores? | **AI first, human review available.** Deterministic gates block; judged findings quarantine. |
+| 4 | Who authors environments? | **Claude drafts, human reviews the medical content.** Four to start, exercising every hard gate. |
+| 5 | Promotion target | Fork `main` for now; upstream once it works. |
+| 6 | Budget | No cap set, but **cost shown and confirmed before every execution**. |
+| 7 | Who writes mutations? | **Fixed operator library for G1**; LLM mutator behind a flag from G2. |
+| 8 | Hermes | **Harness-agnostic.** Adapter contract defined, Hermes left as a stub. |
+| 9 | Where is human review optional? | **Both**: optional at scoring, mandatory at promotion. The merged PR is the approval. |
+| 10 | Live evidence or replay? | **Record once per environment, replay for every candidate.** Live is a deliberate re-test mode. |
+| 11 | Judge design | **Blinded pairwise against the champion**, judge from a different model family than the executor. |
+| 12 | Repetitions and significance | **Measure the noise floor first** (G0 × 5); that spread becomes the neutral band. n=2 exploring, n=3 before promotion. |
+| 13 | Inference provider | **Venice**, priced live from `GET /models`. Executor `z-ai-glm-5-3`, judge `gemini-3-8-flash`. |
+| 14 | Candidate isolation | Overlays under `evolution/`, never a loadable skill path. Satisfied structurally — `validate_skills.py` only walks `skills/`, `house-rules/`, `workshop/data/`. |
+| 15 | Human-edit capture | **Schema now, weight `null`** until real data exists. |
+| 16 | Where do runs execute? | Network policy to be **widened** so a remote session can run experiments unattended. |
+| 17 | Models | `z-ai-glm-5-3` executes, `gemini-3-8-flash` judges. Confirmed against a three-model bake-off before the first campaign. |
+
+## Two things accepted as consequences, not problems
+
+**"No significant improvement detected" is a legitimate outcome.** With the
+neutral band measured from real baseline variance, it is entirely possible
+that all four G1 variants land inside it. That is the engine working. A
+system that always finds a winner is a system whose evaluator cannot
+distinguish signal from noise, and the pressure to produce a champion must
+never be allowed to reach the evaluator.
+
+**Meta-evolution (§27) is a data format, not a feature.** Learning which
+mutation classes pay off needs on the order of a thousand experiments; the
+first campaigns will produce a handful. Every mutation's predicted and
+observed effect is recorded from the first run so the data accumulates —
+and the mutation weights are not adjusted until there is enough of it to
+mean something.

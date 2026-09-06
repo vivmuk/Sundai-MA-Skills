@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "phenotype.schema.json",
+  "title": "Phenotype",
+  "description": "The complete observable behaviour of one genome in one environment on one run. Not just the document (§6) — the engine evaluates the behaviour, and the artifact is only its most visible part.",
+  "type": "object",
+  "required": ["run_id", "genome_id", "environment_id", "seed", "artifacts", "transcript", "tool_calls", "usage", "outcome"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "genome_id": {"type": "string"},
+    "environment_id": {"type": "string"},
+    "seed": {"type": "integer"},
+    "started_at": {"type": "string", "format": "date-time"},
+    "artifacts": {"type": "array", "items": {"type": "object",
+      "required": ["path", "sha256"],
+      "properties": {"path": {"type": "string"}, "sha256": {"type": "string"}}}},
+    "transcript": {"type": "string", "description": "Path to the full turn-by-turn transcript."},
+    "tool_calls": {"type": "array", "items": {"type": "object",
+      "required": ["tool", "arguments", "result_sha256", "source"],
+      "properties": {
+        "tool": {"type": "string"},
+        "arguments": {"type": "object"},
+        "result_sha256": {"type": "string"},
+        "source": {"enum": ["fixture", "live"], "description": "Which evidence mode served this call."}
+      }}},
+    "usage": {"type": "object", "required": ["input_tokens", "output_tokens", "model_calls", "cost_usd", "runtime_seconds"],
+      "properties": {
+        "input_tokens": {"type": "integer"}, "output_tokens": {"type": "integer"},
+        "cached_input_tokens": {"type": "integer"},
+        "model_calls": {"type": "integer"}, "cost_usd": {"type": "number"},
+        "runtime_seconds": {"type": "number"}}},
+    "outcome": {"enum": ["complete", "budget_exceeded", "adapter_error", "refused"]},
+    "budget_breach": {"type": ["object", "null"],
+      "description": "Which limit was hit. A run that overran silently is a bug, not a result."}
+  }
+}

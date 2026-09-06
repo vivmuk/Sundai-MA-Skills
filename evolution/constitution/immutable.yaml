@@ -1,0 +1,80 @@
+# Level 0 — the Medical Affairs constitution.
+#
+# The Evolution Engine has READ-ONLY access to everything named here. No
+# mutation operator may edit these files, weaken these gates, or alter the
+# thresholds below. This is enforced in code (the engine's write root is
+# evolution/lineages/ and evolution/experiments/), not by convention, and
+# this file is CODEOWNERS-protected so that a change requires human review
+# even when a human proposes it.
+#
+# The organism must never be able to pass a test by rewriting the test.
+
+version: 1
+
+source_of_truth:
+  # These skills define what Medical Affairs work is allowed to look like.
+  # A candidate genome inherits them unchanged; it cannot overlay them.
+  - skills/medical-affairs-foundations/SKILL.md
+  - skills/citation-integrity/SKILL.md
+
+principles:
+  - scientific accuracy
+  - evidence traceability
+  - non-promotional scientific exchange
+  - fair balance
+  - explicit uncertainty
+  - safety escalation
+  - data protection
+  - appropriate human accountability
+  - local authorization requirements
+
+never_evolvable:
+  # §28. Each entry is a path or property the engine must refuse to modify.
+  - path: evolution/constitution/
+    reason: the constitution cannot amend itself
+  - path: evolution/evaluators/global/
+    reason: hard gates are not a candidate's to negotiate
+  - property: promotion_requires_human_merge
+    reason: no candidate reaches a canonical skill without a merged pull request
+  - property: external_action_authorization
+    reason: no candidate may acquire the ability to send, submit or publish
+  - path: skills/medical-affairs-foundations/
+    reason: Level 0 source of truth
+  - path: skills/citation-integrity/
+    reason: Level 0 source of truth
+
+engine_permissions:
+  read: repository-wide
+  write:
+    - evolution/lineages/
+    - evolution/experiments/
+  forbidden_write:
+    - skills/
+    - house-rules/
+    - shared/
+    - workshop/
+    - scripts/
+    - evolution/constitution/
+    - evolution/evaluators/global/
+    - evolution/registry/
+    - evolution/policies/
+
+external_actions:
+  # The engine reads evidence and writes files. It does not act on the world.
+  permitted:
+    - public evidence retrieval (PubMed, ClinicalTrials.gov, openFDA)
+    - inference API calls to the configured provider
+    - git branch creation and draft pull requests within this repository
+  forbidden:
+    - any write to a CRM, safety database, or regulatory system
+    - any external communication (email, message, submission, publication)
+    - any push to a protected branch
+    - any merge
+
+promotion:
+  requires_human_merge: true
+  mechanism: draft pull request carrying the diff and its evidence pack
+  # AI scores, ranks and proposes without a human bottleneck. The merge is
+  # the approval, and it is the only approval. An automatically merged
+  # mutation to a Medical Affairs skill is out of scope for this system at
+  # any maturity level.

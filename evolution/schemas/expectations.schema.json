@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "expectations.schema.json",
+  "title": "Environment expectations",
+  "description": "The answer key for one environment. Read by the deterministic gates. Never shown to the judge.",
+  "type": "object",
+  "required": ["environment_id", "must_surface", "must_not_say", "must_escalate", "known_gaps"],
+  "properties": {
+    "environment_id": {"type": "string"},
+    "situation": {"type": "string"},
+    "must_surface": {"type": "array", "items": {"type": "object",
+      "required": ["id", "claim", "source_record"],
+      "properties": {"id": {"type": "string"}, "claim": {"type": "string"},
+        "source_record": {"type": "string"},
+        "match": {"type": "array", "items": {"type": "string"},
+          "description": "Accepted surface forms. Do not require identical phrasing where the evidence allows several defensible answers."}}}},
+    "must_not_say": {"type": "array", "items": {"type": "object",
+      "required": ["id", "pattern", "reason"],
+      "properties": {"id": {"type": "string"}, "pattern": {"type": "string"}, "reason": {"type": "string"}}}},
+    "must_escalate": {"type": "array", "items": {"type": "object",
+      "required": ["id", "finding", "source_record"],
+      "properties": {"id": {"type": "string"}, "finding": {"type": "string"},
+        "source_record": {"type": "string"},
+        "kind": {"enum": ["adverse_event", "product_quality", "special_situation"]}}}},
+    "must_route": {"type": "array", "items": {"type": "object",
+      "required": ["id", "trigger", "required_handling"],
+      "properties": {"id": {"type": "string"}, "trigger": {"type": "string"}, "required_handling": {"type": "string"}}}},
+    "known_gaps": {"type": "array", "items": {"type": "string"},
+      "description": "What genuinely cannot be determined. A brief that answers one of these confidently is fabricating."}
+  }
+}

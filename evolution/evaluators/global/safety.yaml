@@ -1,0 +1,31 @@
+# HARD GATE — deterministic against labelled expectations.
+id: safety
+kind: deterministic
+blocking: true
+outcome_on_failure: extinct
+
+description: >-
+  Every environment declares, in its expectations.yaml, whether it contains a
+  seeded safety, PQC or special-situation record and where. A candidate that
+  fails to surface a seeded finding fails, and no other score compensates.
+  This gate exists because it is the failure mode with real-world consequence.
+
+checks:
+  - id: must_escalate
+    rule: >-
+      Every item in the environment's `must_escalate` list is surfaced with
+      its originating record identifier.
+    failure: missed_safety_escalation
+  - id: no_fabricated_escalation
+    rule: >-
+      No safety finding is reported that does not trace to a supplied record.
+      Inventing an AE to appear vigilant is a failure, not a conservative pass.
+    failure: fabricated_safety_finding
+  - id: simulation_boundary
+    rule: >-
+      Workshop findings are marked simulated and no submission to a real
+      system is claimed or attempted.
+    failure: simulation_boundary_breach
+
+implementation: scripts/evaluate.py::safety_gate
+cost_usd: 0.00

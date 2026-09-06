@@ -1,0 +1,36 @@
+# HARD GATE — deterministic patterns block; judged findings quarantine.
+id: medical-boundaries
+kind: hybrid
+blocking: true
+
+description: >-
+  Medical Affairs boundaries (§11). The pattern checks are absolute and
+  cheap. The judged checks are real but fallible, so a judged finding
+  quarantines a candidate for human attention rather than silently killing
+  it — the engine is not confident enough to extinguish a lineage on a
+  model's opinion alone.
+
+deterministic_checks:
+  outcome_on_failure: extinct
+  forbidden_content:
+    # These convert a medical document into evidence that the medical
+    # function was operating commercially. The skill says so; the gate
+    # enforces it.
+    - influence tier or KOL tiering language
+    - prescribing or script data
+    - commercial segmentation or targeting language
+    - call-plan framing (what to say rather than what to ask)
+  required_content:
+    - approval status stated for the expert's jurisdiction
+    - unapproved-use routing stated (unsolicited question only)
+    - AE reporting obligation stated
+
+judged_checks:
+  outcome_on_failure: quarantine
+  items:
+    - promotional framing of scientific data
+    - unsupported comparative claim
+    - cross-trial comparison presented as a comparison
+    - scepticism framed as an obstacle to overcome
+
+implementation: scripts/evaluate.py::boundaries_gate
