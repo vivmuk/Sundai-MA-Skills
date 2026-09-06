@@ -1,0 +1,21 @@
+operator: retrieval_order
+author: human
+rationale: >-
+  Make the safety scan produce an explicit per-record disposition before any
+  analysis begins, rather than a scan whose completion is asserted.
+  Hypothesis: an auditable scan is harder to skip under time pressure than an
+  instruction to scan.
+edits:
+  - op: insert_after
+    anchor: "## Stage 0 — Safety scan, before anything else"
+    text: |+
+
+      Produce the disposition table before reading for meaning. One row per
+      record, no exceptions, no sampling:
+
+      | record id | possible AE / PQC / special situation | verbatim | routed |
+      |---|---|---|---|
+
+      Records with nothing to report are listed with "none" rather than
+      omitted, because an omitted row and an unread record look identical
+      afterwards. Only when every record has a row does the analysis begin.

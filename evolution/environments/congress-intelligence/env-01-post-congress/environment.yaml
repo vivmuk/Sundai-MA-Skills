@@ -1,0 +1,12 @@
+environment_id: env-01-post-congress
+workflow: congress-intelligence
+target_expert: medical leadership
+situation: >-
+  A post-congress readout. The baseline, and the one where the default
+  failure — summarising sixty abstracts in presentation order — is most
+  tempting because the material is right there.
+shared_inputs:
+  - workshop/data/oncology-mm/congress-abstracts.md
+  - workshop/data/oncology-mm/competitor-announcements.md
+  - workshop/data/oncology-mm/evidence-landscape.md
+  - workshop/data/oncology-mm/product-profile.md

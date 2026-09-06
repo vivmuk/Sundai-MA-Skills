@@ -62,7 +62,10 @@ def main() -> int:
     patch = "".join(difflib.unified_diff(
         before, after, fromfile=f"a/{skill_path}", tofile=f"b/{skill_path}"))
 
-    out = assert_writable(EXPERIMENTS / f"promotion-{genome.short_id}")
+    # Namespaced by workflow: every workflow's first champion is called g1a,
+    # so keying on the genome's short id alone makes five proposals collide in
+    # one directory and only the last one survive.
+    out = assert_writable(EXPERIMENTS / f"promotion-{wf}-{genome.short_id}")
     out.mkdir(parents=True, exist_ok=True)
     (out / "proposal.patch").write_text(patch)
 
@@ -114,7 +117,7 @@ _Proposed by the MA Evolution Engine. Generated {datetime.now(timezone.utc).date
     print(f"  patch     {(out / 'proposal.patch').relative_to(REPO)}")
     print(f"  PR body   {(out / 'PR-BODY.md').relative_to(REPO)}")
     print(f"\n  The engine does not apply this. To promote it:\n")
-    print(f"    git checkout -b promote/{genome.short_id}")
+    print(f"    git checkout -b promote/{wf}-{genome.short_id}")
     print(f"    git apply {(out / 'proposal.patch').relative_to(REPO)}")
     print(f"    python3 scripts/validate_skills.py && python3 scripts/build_index.py")
     print(f"    # then open a PR using {(out / 'PR-BODY.md').relative_to(REPO)}\n")

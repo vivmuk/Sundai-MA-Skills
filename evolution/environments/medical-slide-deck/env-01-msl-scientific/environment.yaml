@@ -1,0 +1,11 @@
+environment_id: env-01-msl-scientific
+workflow: medical-slide-deck
+target_expert: an MSL scientific audience
+situation: >-
+  An MSL scientific presentation built from the pivotal dataset. The baseline,
+  and the case where a single-arm result is most likely to be presented as
+  though it were comparative.
+shared_inputs:
+  - workshop/data/oncology-mm/product-profile.md
+  - workshop/data/oncology-mm/evidence-landscape.md
+  - workshop/data/oncology-mm/congress-abstracts.md

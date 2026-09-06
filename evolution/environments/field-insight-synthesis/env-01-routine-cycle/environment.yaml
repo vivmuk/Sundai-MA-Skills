@@ -1,0 +1,11 @@
+environment_id: env-01-routine-cycle
+workflow: field-insight-synthesis
+target_expert: the field team
+situation: >-
+  A routine quarterly synthesis of MSL field observations. The baseline:
+  what the workflow does when asked to turn a body of records into something
+  leadership can act on.
+shared_inputs:
+  - workshop/data/oncology-mm/field-observations.csv
+  - workshop/data/oncology-mm/medical-plan.md
+  - workshop/data/oncology-mm/product-profile.md

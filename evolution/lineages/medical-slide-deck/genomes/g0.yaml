@@ -1,0 +1,16 @@
+genome_id: medical-slide-deck/g0
+workflow: medical-slide-deck
+generation: 0
+parent: null
+base:
+  skill_path: skills/medical-slide-deck/SKILL.md
+  skill_commit: "2ca63c2442333973cae7f7679f45bb952c443274"
+  requires: [medical-affairs-foundations, citation-integrity, capability-detection]
+overlays: []
+runtime:
+  adapter: mock
+  executor_model: z-ai-glm-5-3
+  # Latent quality for the mock adapter only. It has no meaning for a
+  # real runtime, where quality is whatever the model actually produces.
+  mock_quality: 0.55
+status: champion

@@ -1,0 +1,18 @@
+genome_id: medical-slide-deck/g1c
+workflow: medical-slide-deck
+generation: 1
+parent: medical-slide-deck/g0
+base:
+  skill_path: skills/medical-slide-deck/SKILL.md
+  skill_commit: "2ca63c2442333973cae7f7679f45bb952c443274"
+  requires: [medical-affairs-foundations, citation-integrity, capability-detection]
+overlays:
+  - operator: qa_loop
+    patch_path: evolution/lineages/medical-slide-deck/overlays/g1c-backup-from-questions.yaml
+    rationale: "Derive backup slides from anticipated questions, not from cut content."
+    author: human
+runtime:
+  adapter: mock
+  executor_model: z-ai-glm-5-3
+  mock_quality: 0.575
+status: candidate

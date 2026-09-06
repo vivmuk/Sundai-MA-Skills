@@ -1,0 +1,34 @@
+id: field-insight-synthesis-pairwise
+kind: judged
+selection: true
+
+method:
+  comparison: candidate_vs_reigning_champion
+  blinding: {strip_identity: true, randomize_order: true, strip_metadata: true}
+  repetitions: 3
+  tie_allowed: true
+
+judge:
+  model: gemini-3-8-flash
+  inputs: [the two reports, the field records, the workflow purpose statement, the anchors below]
+
+question: >-
+  A medical director will read one of these before deciding what to change
+  this quarter. Which one is more likely to change a decision?
+
+anchors:
+  better:
+    - insights, not themes — each one implies an action someone could take
+    - frequency and significance weighed independently, not conflated
+    - contradictions preserved rather than averaged away
+    - says what the field did NOT say
+    - each insight has a named owner and a strategic implication
+  worse:
+    - a dashboard of counts that changes nothing
+    - the loudest observation treated as the most important
+    - MSL conclusions presented as HCP statements
+    - contradictions smoothed into a single tidy narrative
+
+decision:
+  win_rate_source: policies/default-evolution-policy.yaml::selection.neutral_band
+  on_unmeasured_band: refuse_to_declare_champion

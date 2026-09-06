@@ -1,0 +1,20 @@
+operator: skill_instruction
+author: human
+rationale: >-
+  Write down what was expected before the congress, then report only the
+  delta. Hypothesis: "what changed" collapses into "what was presented"
+  because nothing forces a prior to exist.
+edits:
+  - op: insert_after
+    anchor: "### Separate genuinely new from incremental"
+    text: |+
+
+      Before classifying anything, write the prior: for each dataset you
+      expected to see, what did we think it would show?
+
+      | dataset | expected | presented | delta |
+      |---|---|---|---|
+
+      An entry whose delta column reads "as expected" is not a finding, and it
+      does not belong in the readout however prominent the presentation was.
+      Without the prior written down first, every abstract looks like news.

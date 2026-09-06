@@ -1,0 +1,30 @@
+id: congress-intelligence-pairwise
+kind: judged
+selection: true
+method:
+  comparison: candidate_vs_reigning_champion
+  blinding: {strip_identity: true, randomize_order: true, strip_metadata: true}
+  repetitions: 3
+  tie_allowed: true
+judge:
+  model: gemini-3-8-flash
+  inputs: [the two readouts, the abstracts and competitor material, the workflow purpose, the anchors below]
+question: >-
+  Leadership has already formed impressions from corridor conversations.
+  Which readout tells them something they did not already assume, and what to
+  do about it?
+anchors:
+  better:
+    - separates genuinely new evidence from incremental updates
+    - says what changed against what was expected, not what was presented
+    - appraises before interpreting — abstract-tier evidence labelled as such
+    - names a contradiction rather than reconciling it
+    - ends with something to do, owned
+  worse:
+    - a summary of abstracts in presentation order
+    - competitor data restated without saying what it changes for us
+    - an abstract treated as equivalent to a peer-reviewed result
+    - "what to watch" that is a list of everything
+decision:
+  win_rate_source: policies/default-evolution-policy.yaml::selection.neutral_band
+  on_unmeasured_band: refuse_to_declare_champion

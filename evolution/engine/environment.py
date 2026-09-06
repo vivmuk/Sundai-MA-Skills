@@ -45,6 +45,7 @@ class Expectations:
     @classmethod
     def load(cls, path: Path) -> "Expectations":
         spec = yaml.safe_load(Path(path).read_text())
+        cls._validate(path, spec)
         return cls(
             environment_id=spec["environment_id"],
             must_surface=spec.get("must_surface", []) or [],
@@ -53,6 +54,30 @@ class Expectations:
             must_route=spec.get("must_route", []) or [],
             known_gaps=spec.get("known_gaps", []) or [],
         )
+
+    @staticmethod
+    def _validate(path: Path, spec: dict) -> None:
+        """Fail loudly, here, naming the file.
+
+        An unquoted "Label: value" in a YAML list silently becomes a mapping,
+        and the answer key is the one artifact where a silent malformation is
+        expensive: the gates would score against something nobody wrote.
+        """
+        for gap in spec.get("known_gaps") or []:
+            if not isinstance(gap, str):
+                raise ValueError(
+                    f"{path}: known_gaps entries must be strings, got "
+                    f"{type(gap).__name__} ({gap!r}). A colon followed by a "
+                    f"space makes YAML read the line as a mapping — quote it.")
+        for group in ("must_surface", "must_not_say", "must_escalate", "must_route"):
+            for item in spec.get(group) or []:
+                if not isinstance(item, dict) or "id" not in item:
+                    raise ValueError(f"{path}: every {group} entry needs an 'id'; "
+                                     f"got {item!r}")
+                for key, value in item.items():
+                    if key == "match" and not isinstance(value, list):
+                        raise ValueError(
+                            f"{path}: {group}/{item['id']} 'match' must be a list")
 
 
 @dataclass

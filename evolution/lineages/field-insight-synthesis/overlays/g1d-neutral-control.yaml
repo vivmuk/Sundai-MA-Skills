@@ -1,0 +1,10 @@
+operator: skill_instruction
+author: human
+rationale: >-
+  Cosmetic rewording, no substantive change. The null candidate: it shows what
+  the measurement system reports when nothing has actually changed. If it
+  wins, the evaluator is broken and the generation is void.
+edits:
+  - op: replace
+    anchor: "## Stage 1 — Inventory"
+    with: "## Stage 1 — Take inventory"

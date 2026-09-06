@@ -1,0 +1,11 @@
+environment_id: env-02-advisory-board
+workflow: medical-slide-deck
+target_expert: an advisory board of external experts
+situation: >-
+  An advisory board deck, where the purpose is to ask the experts something
+  rather than to tell them something. The failure mode is a presentation with
+  a question slide bolted on the end.
+shared_inputs:
+  - workshop/data/oncology-mm/product-profile.md
+  - workshop/data/oncology-mm/evidence-landscape.md
+  - workshop/data/oncology-mm/congress-abstracts.md

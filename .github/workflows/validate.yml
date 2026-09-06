@@ -92,16 +92,29 @@ jobs:
       - name: Engine behaviour
         run: python3 scripts/selftest_evolution.py
 
-      # A full campaign end to end: the band is measured, candidates are run,
-      # gates fire, the tournament ranks, the lineage records, and a promotion
-      # patch is produced that actually applies.
-      - name: Full campaign against the mock adapter
+      # A full campaign end to end, for every active workflow: the band is
+      # measured, candidates are run, gates fire, the tournament ranks, the
+      # lineage records, and a promotion patch is produced that actually
+      # applies to the real skill.
+      - name: Full campaign against the mock adapter, every active workflow
         run: |
-          python3 scripts/evolve.py probe kol-engagement-brief --adapter mock --yes
-          python3 scripts/evolve.py run   kol-engagement-brief --adapter mock --yes
-          python3 scripts/evolve.py tree  kol-engagement-brief
-          python3 scripts/promote.py kol-engagement-brief
-          git apply --check evolution/experiments/promotion-g1a/proposal.patch
+          set -e
+          for wf in $(python3 -c "
+          import yaml
+          spec = yaml.safe_load(open('evolution/registry/workflows.yaml'))['workflows']
+          print(' '.join(k for k, v in spec.items() if v.get('status') == 'active'))
+          "); do
+            echo "::group::$wf"
+            python3 scripts/evolve.py probe "$wf" --adapter mock --yes
+            python3 scripts/evolve.py run   "$wf" --adapter mock --yes
+            python3 scripts/evolve.py tree  "$wf"
+            python3 scripts/promote.py      "$wf"
+            echo "::endgroup::"
+          done
+          for patch in evolution/experiments/promotion-*/proposal.patch; do
+            git apply --check "$patch"
+            echo "applies cleanly: $patch"
+          done
 
       - name: The engine must not have touched a canonical skill
         run: |

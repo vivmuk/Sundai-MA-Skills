@@ -1,0 +1,21 @@
+operator: retrieval_order
+author: human
+rationale: >-
+  Resolve the label position before retrieving any evidence, and let the label
+  gap define the search. Hypothesis: retrieving evidence first frames an
+  on-label question as an evidence question and invites more than was asked.
+edits:
+  - op: insert_after
+    anchor: "## Stage 2 — Retrieve"
+    text: |+
+
+      Establish the label position first, and write it down before searching
+      for anything:
+
+      1. Is the question inside the approved indication, outside it, or partly
+         both?
+      2. What does the label itself say about the specific point asked?
+      3. Only what the label does not answer becomes a search.
+
+      Searching before this step produces a response built around the evidence
+      that exists rather than around the question that was asked.

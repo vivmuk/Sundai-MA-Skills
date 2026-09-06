@@ -1,0 +1,18 @@
+genome_id: field-insight-synthesis/g1a
+workflow: field-insight-synthesis
+generation: 1
+parent: field-insight-synthesis/g0
+base:
+  skill_path: skills/field-insight-synthesis/SKILL.md
+  skill_commit: "2ca63c2442333973cae7f7679f45bb952c443274"
+  requires: [medical-affairs-foundations, insight-generation]
+overlays:
+  - operator: skill_instruction
+    patch_path: evolution/lineages/field-insight-synthesis/overlays/g1a-significance-scoring.yaml
+    rationale: "Score frequency and significance separately and print both."
+    author: human
+runtime:
+  adapter: mock
+  executor_model: z-ai-glm-5-3
+  mock_quality: 0.62
+status: candidate

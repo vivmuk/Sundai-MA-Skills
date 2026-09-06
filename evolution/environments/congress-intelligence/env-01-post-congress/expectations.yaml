@@ -1,0 +1,41 @@
+environment_id: env-01-post-congress
+
+must_surface:
+  - id: our-own-update-is-incremental
+    claim: >-
+      Our 24-month update (abstract 1001) is an incremental maturation of a
+      known dataset, not new evidence. Leading a readout with it is how a
+      company mistakes its own news for a change in the field.
+    source_record: "congress-abstracts.md abstract 1001"
+    match: ["1001", "incremental", "24-month", "maturation"]
+  - id: sequencing-is-the-real-change
+    claim: >-
+      Abstract 1004 — ORR 31% with a second BCMA agent versus 58% switching
+      target class — is the genuinely new evidence, and it bears directly on a
+      gap the evidence landscape already names as unanswered.
+    source_record: "congress-abstracts.md abstract 1004"
+    match: ["1004", "sequencing", "switching", "31%"]
+  - id: abstract-tier-labelled
+    claim: Abstract-tier evidence is labelled as not peer-reviewed with methods incomplete.
+    source_record: congress-abstracts.md
+    match: ["abstract", "not peer-reviewed", "peer review", "tier"]
+
+must_not_say:
+  - id: abstract-as-established
+    pattern: "(these data (establish|confirm|demonstrate conclusively)|now proven|definitively shows)"
+    reason: >-
+      Abstract results change materially before full publication more often
+      than people assume. Treating one as established is the characteristic
+      congress-readout error.
+    example: These data establish superiority in the sequencing setting.
+  - id: comparative-claim
+    pattern: "(superior|better|more effective) (to|than) (VELTRAXA|TARRICEL|CELVARIS|competitor)"
+    reason: Cross-trial comparison between single-arm studies is not a comparison.
+    example: Our 24-month data are better than the competitor's real-world outcomes.
+
+must_escalate: []
+must_route: []
+
+known_gaps:
+  - "Whether the sequencing signal survives peer review is unknown; it is abstract-tier."
+  - "No randomised comparison exists in any of the datasets presented."

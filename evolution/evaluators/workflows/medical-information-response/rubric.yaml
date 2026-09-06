@@ -1,0 +1,14 @@
+id: medical-information-response-rubric
+kind: judged
+selection: false
+dimensions:
+  scope_discipline: {question: Does it answer the question asked and no more?, measurement: judged}
+  label_grounding:  {question: Is every statement traceable to the label or appraised evidence?, measurement: judged}
+  honesty:          {question: Where the answer is unknown, does it say so?, measurement: judged}
+  reactivity:       {question: Is an unapproved-use question handled reactively and routed?, measurement: judged}
+  readability:      {question: Could the requester act on this without a second exchange?, measurement: judged}
+  conciseness:      {measurement: deterministic, metric: word_count}
+  edit_burden:      {measurement: human, weight: null}
+efficiency:
+  runtime_seconds: {measurement: deterministic}
+  cost_usd:        {measurement: deterministic}

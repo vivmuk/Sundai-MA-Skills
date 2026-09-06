@@ -1,0 +1,22 @@
+operator: qa_loop
+author: human
+rationale: >-
+  Add an explicit pass that asks what the medical plan expected the field to
+  raise and did not. Hypothesis: absent signal is the most valuable and most
+  reliably dropped section, because nothing in the records prompts it.
+edits:
+  - op: insert_before
+    anchor: "## Stage 4 — Challenge"
+    text: |+
+      ### The absence pass
+
+      Before challenging the draft, read the medical plan's current priorities
+      and list, for each, whether the field said anything about it at all.
+
+      A priority the field never mentioned is a finding: either the strategy
+      is addressing something practitioners are not experiencing, or the field
+      is not equipped to notice it. Both are worth a leader's attention, and
+      neither appears anywhere in the observations themselves — which is
+      precisely why this pass has to be run against the plan rather than
+      against the records.
+

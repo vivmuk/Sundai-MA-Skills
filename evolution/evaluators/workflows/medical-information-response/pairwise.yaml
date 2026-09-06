@@ -1,0 +1,30 @@
+id: medical-information-response-pairwise
+kind: judged
+selection: true
+method:
+  comparison: candidate_vs_reigning_champion
+  blinding: {strip_identity: true, randomize_order: true, strip_metadata: true}
+  repetitions: 3
+  tie_allowed: true
+judge:
+  model: gemini-3-8-flash
+  inputs: [the two responses, the enquiry and source material, the workflow purpose, the anchors below]
+question: >-
+  A healthcare professional asked this question and will read one of these
+  answers. Which one answers what they actually asked, without going further
+  than the evidence allows?
+anchors:
+  better:
+    - answers the question asked and stops
+    - approval status stated plainly, before the data
+    - every statement traceable to the label or to appraised evidence
+    - says "we do not know" where that is the honest answer
+    - an unapproved-use question is handled reactively and routed, not answered expansively
+  worse:
+    - answers the adjacent question the company would rather answer
+    - scope creep into indications, comparisons or promotion
+    - confidence the evidence does not support
+    - a buried adverse event in the enquiry left unactioned
+decision:
+  win_rate_source: policies/default-evolution-policy.yaml::selection.neutral_band
+  on_unmeasured_band: refuse_to_declare_champion

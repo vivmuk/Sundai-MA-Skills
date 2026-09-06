@@ -38,9 +38,87 @@ workflows:
     environments: evolution/environments/kol-engagement-brief/
     evaluators: evolution/evaluators/workflows/kol-engagement-brief/
 
-  # Wave 1 candidates (§34), not yet activated. Each needs its own
-  # environments and rubric before it can be evolved.
-  field-insight-synthesis:   {status: planned}
-  medical-information-response: {status: planned}
-  congress-intelligence:     {status: planned}
-  medical-slide-deck:        {status: planned}
+  field-insight-synthesis:
+    status: active
+    ancestor:
+      skill: skills/field-insight-synthesis/SKILL.md
+      version: "1.0.0"
+    requires: [medical-affairs-foundations, insight-generation]
+    suggests: [strategic-analysis, medical-terminology-mapping, deliverable-quality-review]
+    purpose:
+      statement: >-
+        Turn a body of field medical observations into insights a leader can
+        act on. The unit of value is a decision that changes, not a theme that
+        is displayed.
+      mutation: governed
+    invariants:
+      - every record is scanned for safety, product quality and special
+        situations before any analysis begins
+      - what the HCP said is separated from what the MSL concluded
+      - frequency and significance are weighed independently
+      - contradictions are preserved, not averaged
+      - every insight carries a named owner
+    environments: evolution/environments/field-insight-synthesis/
+    evaluators: evolution/evaluators/workflows/field-insight-synthesis/
+
+  medical-information-response:
+    status: active
+    ancestor:
+      skill: skills/medical-information-response/SKILL.md
+      version: "1.1.0"
+    requires: [medical-affairs-foundations, citation-integrity, regulatory-label-intelligence]
+    suggests: [evidence-appraisal, pubmed-search, deliverable-quality-review]
+    purpose:
+      statement: >-
+        Answer the clinical question a healthcare professional actually asked,
+        grounded in the label or in appraised evidence, without going further
+        than the evidence or the approval allows.
+      mutation: governed
+    invariants:
+      - the question asked is answered, and no adjacent question is
+      - approval status is stated
+      - an unapproved-use question is handled reactively and routed
+      - the enquiry itself is scanned for adverse events and special situations
+      - 'a plain "we do not know" is preferred to a confident answer built on nothing'
+    environments: evolution/environments/medical-information-response/
+    evaluators: evolution/evaluators/workflows/medical-information-response/
+
+  congress-intelligence:
+    status: active
+    ancestor:
+      skill: skills/congress-intelligence/SKILL.md
+      version: "1.0.0"
+    requires: [medical-affairs-foundations, evidence-appraisal, strategic-analysis]
+    suggests: [evidence-synthesis, citation-integrity, clinical-trials-search]
+    purpose:
+      statement: >-
+        Tell medical leadership what changed at a congress and what should now
+        be different, rather than what was presented.
+      mutation: governed
+    invariants:
+      - what changed is reported against what was expected
+      - genuinely new evidence is separated from incremental updates
+      - evidence is appraised before it is interpreted, and abstract-tier is labelled
+      - contradictions are named, not reconciled
+    environments: evolution/environments/congress-intelligence/
+    evaluators: evolution/evaluators/workflows/congress-intelligence/
+
+  medical-slide-deck:
+    status: active
+    ancestor:
+      skill: skills/medical-slide-deck/SKILL.md
+      version: "1.1.0"
+    requires: [medical-affairs-foundations, citation-integrity, capability-detection]
+    suggests: [evidence-appraisal, data-visualization-for-medical, deliverable-quality-review]
+    purpose:
+      statement: >-
+        Build a non-promotional medical deck that presents evidence at the
+        standard a medical audience holds it to, and survives the questions it
+        will get.
+      mutation: governed
+    invariants:
+      - every data slide carries a reference
+      - the design is named beside every result
+      - fair balance appears at comparable prominence, not as a footnote
+      - approval status is stated
+      - backup slides are built from anticipated questions

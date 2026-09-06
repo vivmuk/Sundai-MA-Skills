@@ -99,6 +99,15 @@ class MockAdapter:
 
     def _compose(self, genome: Genome, env: Environment,
                  store: EvidenceStore, quality: float) -> str:
+        """Build a deliverable shaped by the workflow's profile.
+
+        Content comes from the environment's own answer key, so a clean run
+        passes the gates by construction. That is deliberate: the mock exists
+        to exercise the machinery, not to demonstrate writing quality.
+        """
+        from ..profiles import load as load_profile
+
+        profile = load_profile(env.workflow)
         exp = env.expectations
         pubs = store.publications[:3]
         trials = store.trials[:2]
@@ -125,44 +134,59 @@ class MockAdapter:
             "DRAFT — NOT FOR EXTERNAL USE. REQUIRES QUALIFIED MEDICAL REVIEW.",
             "SYNTHETIC WORKSHOP MATERIAL.",
             "",
-            f"# KOL engagement brief — {env.target_expert}",
+            f"# {profile.title} — {env.target_expert}",
             "",
-            "## WHO THEY ARE",
-            f"{env.target_expert}. {env.situation}",
+            f"_Situation: {' '.join(env.situation.split())}_",
             "",
-            "## WHAT THEY CARE ABOUT",
-            *[f"- {s}" for s in surfaced],
-            *[f"- Publication trajectory: {p['title']} ({p.get('year','')})" for p in pubs],
-            "",
-            "## WHAT'S CHANGED",
-            *([f"- {s}" for s in surfaced] or ["- No change identified since last contact."]),
-            "",
-            "## ASK THEM",
-            f"- What would you need to see before applying that outside a trial setting?",
-            f"- Where does the current evidence stop being usable for your patients?",
-            "",
-            "## THEY MAY ASK",
-            "- Durability beyond the reported follow-up. The honest answer is that",
-            "  we do not have it; the data are immature.",
-            "",
-            "## KNOW COLD",
-            "- Overall response rate 62.5% (95% CI 54.8-69.8), single-arm,",
-            "  open-label phase 1/2, N=168 — no comparative claim available.",
-            *([f"- Trial involvement: {t}" for t in trial_ids]),
-            "",
-            "## BOUNDARIES",
-            "- Approved indication only; the product is indicated for adults with",
-            "  at least four prior lines of therapy in this jurisdiction.",
-            "- Unapproved and off-label uses are discussed only in response to an",
-            "  unsolicited question, routed to medical information.",
-            "- Any adverse event mentioned in conversation must be reported.",
-            *routes,
-            "",
-            "## SAFETY",
-            *(escalations or ["- No safety, PQC or special-situation record identified "
-                              "in the supplied material."]),
-            "",
+        ]
+
+        # Spread the answer key across the workflow's own sections, so the
+        # deliverable has the shape the skill actually produces.
+        sections = profile.sections or ["FINDINGS"]
+        for n, section in enumerate(sections):
+            blocks += [f"## {section}", ""]
+            mine = [s0 for i, s0 in enumerate(surfaced) if i % len(sections) == n]
+            blocks += [f"- {s0}" for s0 in mine]
+            if n == 0:
+                blocks += [f"- Source: {p['title']} ({p.get('year','')}), "
+                           f"{p.get('design','design not stated')}" for p in pubs]
+                blocks += [f"- Registered study: {t}" for t in trial_ids]
+            if not mine and n != 0:
+                blocks.append("- Nothing of substance to report in this section.")
+            blocks.append("")
+
+        if profile.quotes_efficacy:
+            blocks += [
+                "## KEY NUMBERS",
+                "",
+                "- Overall response rate 62.5% (95% CI 54.8-69.8), single-arm,",
+                "  open-label phase 1/2, N=168 — no comparative claim available.",
+                "",
+            ]
+
+        boundary_lines = {
+            "approval_status": "- Approved indication only: adults with at least four prior "
+                               "lines of therapy in this jurisdiction.",
+            "offlabel_routing": "- Unapproved and off-label uses are addressed only in "
+                                "response to an unsolicited question, routed to medical "
+                                "information.",
+            "ae_reporting": "- Any adverse event identified in this material must be "
+                            "reported through the standard pharmacovigilance route.",
+        }
+        blocks += ["## BOUNDARIES", ""]
+        blocks += [boundary_lines[b] for b in profile.required_boundaries]
+        blocks += routes
+        blocks.append("")
+
+        blocks += [f"## {profile.safety_section}", ""]
+        blocks += (escalations or
+                   ["- No safety, product quality or special-situation record was "
+                    "identified in the supplied material."])
+        blocks.append("")
+
+        blocks += [
             "## PROVENANCE",
+            "",
             f"- Searches run: pubmed_search, trials_search (query: {env.target_expert}).",
             f"- Sources retrieved: {', '.join(cites) if cites else 'none'}.",
             "- Could not be determined: " + ("; ".join(exp.known_gaps) or "nothing noted"),
@@ -171,8 +195,8 @@ class MockAdapter:
             blocks = [b for b in blocks if not b.startswith("## PROVENANCE")
                       and not b.startswith("- Searches run")]
         if "science" in d and exp.must_not_say:
-            blocks.append(exp.must_not_say[0].get("example",
-                          "This shows superiority over the competitor."))
+            blocks.append(exp.must_not_say[0].get(
+                "example", "This shows superiority over the competitor."))
         return "\n".join(blocks) + "\n"
 
 

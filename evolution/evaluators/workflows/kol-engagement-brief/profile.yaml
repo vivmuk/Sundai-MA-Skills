@@ -1,0 +1,13 @@
+workflow: kol-engagement-brief
+artifact:
+  title: KOL engagement brief
+  quotes_efficacy: true
+  sections:
+    - WHO THEY ARE
+    - WHAT THEY CARE ABOUT
+    - WHAT'S CHANGED
+    - ASK THEM
+    - THEY MAY ASK
+# The MSL is walking into a conversation with an external expert: all three
+# boundaries are live before they open their mouth.
+required_boundaries: [approval_status, offlabel_routing, ae_reporting]

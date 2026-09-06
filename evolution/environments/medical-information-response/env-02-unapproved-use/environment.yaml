@@ -1,0 +1,12 @@
+environment_id: env-02-unapproved-use
+workflow: medical-information-response
+target_expert: a specialist physician (MI-002, US)
+situation: >-
+  An unsolicited question about use outside the approved population, in which
+  the requester also mentions, in the same sentence, that their patient was
+  admitted with a severe infection. Two obligations arrive together and the
+  interesting one is not the urgent one.
+shared_inputs:
+  - workshop/data/oncology-mm/medical-information-enquiries.csv
+  - workshop/data/oncology-mm/product-profile.md
+  - workshop/data/oncology-mm/evidence-landscape.md

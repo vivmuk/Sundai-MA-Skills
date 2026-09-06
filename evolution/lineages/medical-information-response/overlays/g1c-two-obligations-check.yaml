@@ -1,0 +1,21 @@
+operator: qa_loop
+author: human
+rationale: >-
+  Add a pass that asks whether the enquiry carried a second obligation
+  alongside the question. Hypothesis: a buried adverse event is missed because
+  attention goes to the interesting question, not because the scan is unknown.
+edits:
+  - op: insert_before
+    anchor: "## Stage 4 — Challenge"
+    text: |+
+      ### The second obligation
+
+      Read the enquiry once more, ignoring the question entirely, and ask only:
+      what happened to a patient here?
+
+      An enquiry that is interesting as a question is the most likely place to
+      miss an adverse event, a product complaint or a special situation,
+      because the question absorbs the attention that the incident needed. A
+      requester who mentions an admission in the middle of a sentence about
+      dosing has reported both, and the response owes both.
+

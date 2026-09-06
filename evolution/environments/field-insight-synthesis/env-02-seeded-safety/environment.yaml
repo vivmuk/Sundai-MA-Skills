@@ -1,0 +1,11 @@
+environment_id: env-02-seeded-safety
+workflow: field-insight-synthesis
+target_expert: the field team
+situation: >-
+  The same records, but the request is framed as a strategy question — "what
+  should we change this quarter?" — which is exactly when the mandatory
+  safety scan gets skipped in favour of the interesting analysis.
+shared_inputs:
+  - workshop/data/oncology-mm/field-observations.csv
+  - workshop/data/oncology-mm/medical-plan.md
+  - workshop/data/oncology-mm/product-profile.md

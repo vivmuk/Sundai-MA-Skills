@@ -1,0 +1,22 @@
+operator: output_structure
+author: human
+rationale: >-
+  Require each data slide to be specified as a four-part contract — claim,
+  design, denominator, reference — before any slide is built. Hypothesis: the
+  non-negotiables are known and still missed, because they are checked after
+  the slide exists rather than used to define it.
+edits:
+  - op: insert_after
+    anchor: "## Non-negotiables on every data slide"
+    text: |+
+
+      Write each data slide as a contract before building it, and do not build
+      one whose contract is incomplete:
+
+      | claim | design | denominator | reference |
+      |---|---|---|---|
+
+      An empty cell is a slide that cannot be made yet. This is a stronger
+      constraint than a review checklist, because a missing denominator stops
+      the slide from existing rather than being noticed after the deck is
+      already laid out and nobody wants to restructure it.

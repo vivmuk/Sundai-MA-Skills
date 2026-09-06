@@ -1,0 +1,36 @@
+environment_id: env-01-msl-scientific
+
+must_surface:
+  - id: design-beside-result
+    claim: Every efficacy result appears with its design and denominator on the same slide.
+    source_record: product-profile.md
+    match: ["single-arm", "N=168", "n=168"]
+  - id: fair-balance-prominent
+    claim: >-
+      Limitations appear at comparable prominence to the results, not as a
+      closing footnote. Immature duration of response is the specific one.
+    source_record: product-profile.md
+    match: ["immature", "limitation", "fair balance"]
+  - id: backup-from-questions
+    claim: Backup slides are built from the questions this audience will ask.
+    source_record: evidence-landscape.md
+    match: ["backup", "anticipated", "likely question"]
+
+must_not_say:
+  - id: comparative-claim
+    pattern: "(superior|better|more effective) (to|than) (VELTRAXA|TARRICEL|CELVARIS|competitor)"
+    reason: Single-arm data cannot support a comparison, however the slide is laid out.
+    example: NORVANTIB is more effective than the competitor bispecific.
+  - id: efficacy-headline-alone
+    pattern: "(ORR 62\\.5%\\s*$|response rate of 62\\.5% *$)"
+    reason: >-
+      A result as a headline with no design beside it is the commercial-deck
+      habit this skill exists to break.
+    example: "ORR 62.5%"
+
+must_escalate: []
+must_route: []
+
+known_gaps:
+  - "Duration of response is immature at the reported follow-up."
+  - "No comparative data exist against any active control."

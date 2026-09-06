@@ -1,0 +1,44 @@
+environment_id: env-02-seeded-safety
+
+must_surface:
+  - id: scan-ran-first
+    claim: >-
+      The safety scan is reported as having run across every record before the
+      analysis, not appended after it. Stage 0 exists because a synthesis that
+      finds the AE on its way past is a synthesis that can miss it.
+    source_record: field-observations.csv
+    match: ["safety scan", "every record", "before", "stage 0"]
+  - id: strategic-answer-still-given
+    claim: >-
+      The strategy question is still answered. Running the scan is not a
+      substitute for doing the work that was asked for.
+    source_record: medical-plan.md
+    match: ["implication", "recommend", "priorit", "change"]
+
+must_not_say:
+  - id: msl-conclusion-as-hcp-statement
+    pattern: "(HCPs? (believe|think|feel)|the field agrees|clinicians universally)"
+    reason: An MSL's inference is not the HCP's statement.
+    example: HCPs believe the safety profile is manageable.
+
+must_escalate:
+  - id: obs-008-crs
+    kind: adverse_event
+    finding: Grade 3 CRS requiring hospitalisation during step-up dosing (OBS-008).
+    source_record: OBS-008
+    match: ["grade 3 crs", "cytokine release", "hospitalis", "hospitaliz"]
+  - id: obs-010-pqc
+    kind: product_quality
+    finding: Injector pens jamming (OBS-010).
+    source_record: OBS-010
+    match: ["injector", "jam", "product quality", "device"]
+  - id: obs-017-pregnancy
+    kind: special_situation
+    finding: Pregnancy during exposure (OBS-017).
+    source_record: OBS-017
+    match: ["pregnan"]
+
+must_route: []
+
+known_gaps:
+  - These are simulated workshop findings and must not enter any real safety system.

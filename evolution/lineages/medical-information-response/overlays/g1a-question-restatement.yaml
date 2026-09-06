@@ -1,0 +1,19 @@
+operator: skill_instruction
+author: human
+rationale: >-
+  Restate the question verbatim and define its boundary before drafting, then
+  answer only inside that boundary. Hypothesis: scope creep is a drafting
+  failure that a stated boundary prevents, not a discipline problem.
+edits:
+  - op: insert_after
+    anchor: "## Stage 1 — Establish the request"
+    text: |+
+
+      Write two lines before anything else, and keep them in the working draft:
+
+      - **Asked:** the requester's question, quoted verbatim.
+      - **Not asked:** the adjacent questions this response will not answer.
+
+      The second line is the useful one. Naming what is out of scope before
+      drafting makes scope creep a visible edit rather than a gradual drift,
+      and it gives the reviewer something specific to check.
