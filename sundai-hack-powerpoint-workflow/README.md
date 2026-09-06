@@ -1,25 +1,25 @@
 # Sundai Hack — PowerPoint workflow
 
-Skill subset for **single PDF → medical-to-medical (M2M) deck**.
+## The skill
 
-Copied from [Open-Medical-Affairs/Medical-Affairs-Skills](https://github.com/Open-Medical-Affairs/Medical-Affairs-Skills) (`b688885`) into `vivmuk/Sundai-MA-Skills` for the Sundai Hack.
+**One skill for the hackathon:** [Sundai PowerPoint skill](skills/sundai-powerpoint/SKILL.md)
 
-## Load order
+Path: `sundai-hack-powerpoint-workflow/skills/sundai-powerpoint/`
 
-1. `medical-affairs-foundations`
-2. `medical-affairs-orchestrator` (optional if path is known)
-3. `document-ingestion` (+ `capability-detection`)
-4. `evidence-appraisal`
-5. `citation-integrity`
-6. `capability-detection`
-7. `consulting-grade-design`
-8. `data-visualization-for-medical`
-9. `medical-slide-deck` (M2M / MSL scientific presentation)
-10. `deliverable-quality-review`
-11. `mlr-review-readiness`
+It encompasses the full **PDF → M2M deck** path in a single `SKILL.md`:
 
-Do not start `medical-slide-deck` until analysis is done.
+- Foundations / intake / AE awareness
+- Document ingestion
+- Evidence appraisal + citation integrity
+- Capability detection
+- Consulting-grade design + medical slide rules
+- Anthropic pptx mechanics (create / edit / validate)
+- Quality review + MLR readiness
 
-## Skills included
+Do **not** load the sibling MA skills for this hack — use `sundai-powerpoint` alone.
 
-See `skills/` and matching `house-rules/` overrides.
+Optional overrides: `skills/sundai-powerpoint/house-rules/`
+
+## Link
+
+https://github.com/vivmuk/Sundai-MA-Skills/tree/main/sundai-hack-powerpoint-workflow/skills/sundai-powerpoint
