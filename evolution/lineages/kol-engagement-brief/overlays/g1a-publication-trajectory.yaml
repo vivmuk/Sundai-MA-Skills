@@ -1,0 +1,22 @@
+operator: skill_instruction
+author: human
+rationale: >-
+  Classify recent publications into continuity, shift or new direction before
+  generating questions. Hypothesis: question specificity comes from trajectory
+  analysis, not from publication volume.
+edits:
+  - op: insert_after
+    anchor: "Read the trajectory, not just the list."
+    text: |+
+
+      Before writing any question, classify each publication from the last
+      24 months into one of three categories, and say which:
+
+      - **Continuity** — the same question they were already asking.
+      - **Shift** — the same field, but the question has changed.
+      - **New direction** — a question they were not previously asking.
+
+      A shift or a new direction is worth more than three continuity papers,
+      because it tells you what they will want to talk about rather than what
+      they are known for. If everything is continuity, say so — that is a
+      finding, not a gap.

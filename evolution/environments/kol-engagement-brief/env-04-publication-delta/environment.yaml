@@ -1,0 +1,12 @@
+environment_id: env-04-publication-delta
+workflow: kol-engagement-brief
+target_expert: Dr Adaeze Okafor
+situation: >-
+  Same expert as the baseline, but a publication of hers has appeared since
+  the last contact and it shifts her position. Tests whether the workflow
+  detects the delta rather than restating the dossier.
+shared_inputs:
+  - workshop/data/oncology-mm/kol-dossiers.md
+  - workshop/data/oncology-mm/interaction-notes.md
+  - workshop/data/oncology-mm/product-profile.md
+  - workshop/data/oncology-mm/evidence-landscape.md

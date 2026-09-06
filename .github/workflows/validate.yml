@@ -73,6 +73,41 @@ jobs:
       - name: Test launch, sources, read-only data and failure paths
         run: python3 scripts/selftest_workshop.py
 
+  evolution:
+    name: Evolution Engine (mock adapter, offline)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install validator dependencies
+        run: pip install --quiet pyyaml
+
+      # Deliberately no network and no API key. The engine runs against the
+      # mock adapter and authored fixtures, so the whole suite is free and
+      # cannot be turned red by an upstream outage or an expired key.
+      - name: Engine behaviour
+        run: python3 scripts/selftest_evolution.py
+
+      # A full campaign end to end: the band is measured, candidates are run,
+      # gates fire, the tournament ranks, the lineage records, and a promotion
+      # patch is produced that actually applies.
+      - name: Full campaign against the mock adapter
+        run: |
+          python3 scripts/evolve.py probe kol-engagement-brief --adapter mock --yes
+          python3 scripts/evolve.py run   kol-engagement-brief --adapter mock --yes
+          python3 scripts/evolve.py tree  kol-engagement-brief
+          python3 scripts/promote.py kol-engagement-brief
+          git apply --check evolution/experiments/promotion-g1a/proposal.patch
+
+      - name: The engine must not have touched a canonical skill
+        run: |
+          git diff --exit-code -- skills/ house-rules/ shared/ \
+            evolution/constitution/ evolution/evaluators/global/
+
   live-apis:
     name: API clients (live — manual only)
     runs-on: ubuntu-latest

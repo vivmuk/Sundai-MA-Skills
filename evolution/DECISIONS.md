@@ -24,6 +24,25 @@ be done deliberately, which is why they are written down.
 | 16 | Where do runs execute? | Network policy to be **widened** so a remote session can run experiments unattended. |
 | 17 | Models | `z-ai-glm-5-3` executes, `gemini-3-8-flash` judges. Confirmed against a three-model bake-off before the first campaign. |
 
+## Changed during the build
+
+**Decision 10 (record once, replay) landed differently than specified.** The
+spec assumed fixtures would be *recorded* from PubMed and ClinicalTrials.gov,
+and that recording would need network egress. It would not have worked: these
+experts are fictional, so a live search returns nothing to record. The corpora
+are authored instead. The replay guarantee is unchanged and the practical
+result is better — every environment runs offline, and an environment change
+becomes an edit you can diff rather than an event you absorb.
+
+**The first neutral-band implementation was wrong and the null control caught
+it.** Measuring single comparisons gave a band of ±0.5, because one comparison
+can only score 0, 0.5 or 1 — a band nothing could ever beat. Worse, once
+fixed, rounding the band to four decimal places let a win rate of exactly 5/6
+cross a threshold of 0.8333 and crowned `g1d`, the cosmetic null candidate, as
+champion. Both are fixed: the probe now measures the same statistic the
+tournament reports, by making the ancestor compete against itself. That
+`g1d` exists is why either bug was visible at all.
+
 ## Two things accepted as consequences, not problems
 
 **"No significant improvement detected" is a legitimate outcome.** With the

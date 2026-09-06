@@ -1,0 +1,18 @@
+genome_id: kol-engagement-brief/g1a
+workflow: kol-engagement-brief
+generation: 1
+parent: kol-engagement-brief/g0
+base:
+  skill_path: skills/kol-engagement-brief/SKILL.md
+  skill_commit: "2ca63c2442333973cae7f7679f45bb952c443274"
+  requires: [medical-affairs-foundations, citation-integrity]
+overlays:
+  - operator: skill_instruction
+    patch_path: evolution/lineages/kol-engagement-brief/overlays/g1a-publication-trajectory.yaml
+    rationale: "Classify publications into continuity, shift or new direction before generating questions."
+    author: human
+runtime:
+  adapter: mock
+  executor_model: z-ai-glm-5-3
+  mock_quality: 0.62
+status: candidate

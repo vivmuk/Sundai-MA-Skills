@@ -1,0 +1,25 @@
+operator: qa_loop
+author: human
+rationale: >-
+  Replace draft-then-review with claim extraction, citation validation,
+  specificity check and a red-team pass. Hypothesis: most of the quality gap
+  is caught, not written.
+edits:
+  - op: replace
+    anchor: "Run `deliverable-quality-review`, plus these:"
+    with: |-
+      Do not review the draft as prose. Take it apart in this order, and fix
+      what each pass finds before starting the next:
+
+      1. **Claim extraction.** List every factual assertion in the brief as a
+         separate line. If a sentence carries two claims, it becomes two lines.
+      2. **Citation validation.** For each extracted claim, name the source and
+         confirm it was actually retrieved in this run. A claim with no source
+         is deleted or marked explicitly as inference.
+      3. **Specificity check.** For each question in ASK THEM, ask whether it
+         could be put to any other expert in this field. If it could, it is
+         cut or rewritten.
+      4. **Red team.** Read the brief as the expert. Mark anything you would
+         resent, dispute, or find naive. Fix all three categories.
+
+      Then run `deliverable-quality-review`, plus these:

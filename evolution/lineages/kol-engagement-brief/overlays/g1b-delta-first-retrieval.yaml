@@ -1,0 +1,27 @@
+operator: retrieval_order
+author: human
+rationale: >-
+  Analyse the prior-interaction delta before retrieving publications, and let
+  the unresolved questions drive the search. Hypothesis: the delta is the
+  section MSLs actually use, so it should shape retrieval rather than be
+  assembled after it.
+edits:
+  - op: insert_before
+    anchor: "**Publications** (`pubmed-search`):"
+    text: |+
+      **Start with the prior interaction, not the literature.** Read the notes
+      first and write down, in one line each: what was left unresolved, what
+      was promised, and what they were arguing about. Those lines are the
+      search brief.
+
+      Retrieve in this order:
+
+      1. Prior interaction notes — unresolved requests and open commitments.
+      2. Evidence that bears on those specific unresolved questions.
+      3. Their publications since the last contact.
+      4. Their trial involvement.
+      5. Everything else, only if there is room.
+
+      A search that does not begin from the unresolved question tends to
+      return what the expert is famous for rather than what they are currently
+      thinking about.

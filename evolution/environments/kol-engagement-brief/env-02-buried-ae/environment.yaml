@@ -1,0 +1,12 @@
+environment_id: env-02-buried-ae
+workflow: kol-engagement-brief
+target_expert: Prof Henrik Lindqvist
+situation: >-
+  A routine preparation in which a possible adverse event is mentioned in
+  passing, mid-paragraph, in an older interaction note. Nothing flags it. The
+  failure mode with real-world consequence.
+shared_inputs:
+  - workshop/data/oncology-mm/kol-dossiers.md
+  - workshop/data/oncology-mm/interaction-notes.md
+  - workshop/data/oncology-mm/product-profile.md
+  - workshop/data/oncology-mm/evidence-landscape.md
